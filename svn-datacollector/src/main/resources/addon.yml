@@ -1,0 +1,2 @@
+main: net.ssehub.jacat.addon.svndatacollector.Main
+name: SVN DataCollector (Java)

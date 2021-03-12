@@ -1,0 +1,17 @@
+spring:
+  data:
+    mongodb:
+      authentication-database: admin
+      uri: mongodb://root:example@127.0.0.1
+      database: jacat
+  profiles:
+    active: local
+analysis:
+  max-tasks: -1
+courses:
+  - course: java
+    protocol: svn-java
+    language: java
+  - course: c++
+    protocol: local
+    language: c++
