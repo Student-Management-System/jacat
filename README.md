@@ -66,9 +66,7 @@ To get a local copy up and running follow these simple steps.
 <!-- LICENSE -->
 ## License
 
-See [https://github.com/Student-Management-System/jacat/blob/main/LICENSE](https://google.de) for more information.
-
-
+See [LICENSE](https://github.com/Student-Management-System/jacat/blob/main/LICENSE) for more information.
 
 <!-- CONTACT -->
 ## Contact
