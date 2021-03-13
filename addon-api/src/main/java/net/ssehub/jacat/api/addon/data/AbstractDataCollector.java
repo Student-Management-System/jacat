@@ -12,7 +12,5 @@ public abstract class AbstractDataCollector {
         return protocol;
     }
 
-    public abstract void arrange(DataRequest request);
-
     public abstract SubmissionCollection collect(DataRequest request);
 }

@@ -31,7 +31,6 @@ public class TaskPreparer {
         preparedTask.setWorkspace(taskWorkspace.toPath());
         SubmissionCollection collection;
         try {
-            collector.arrange(dataRequest);
             collection = collector.collect(dataRequest);
         } catch (RuntimeException e) {
             throw new ResourceNotAvailableException();

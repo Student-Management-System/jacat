@@ -1,5 +1,7 @@
 package net.ssehub.jacat.api.addon.data;
 
+import java.util.Objects;
+
 public class DataRequest {
 
     private String course;
@@ -22,5 +24,20 @@ public class DataRequest {
 
     public String getSubmission() {
         return submission;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        DataRequest that = (DataRequest) o;
+        return Objects.equals(course, that.course) &&
+                Objects.equals(homework, that.homework) &&
+                Objects.equals(submission, that.submission);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(course, homework, submission);
     }
 }

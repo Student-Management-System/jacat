@@ -5,55 +5,58 @@ import net.ssehub.jacat.api.addon.data.DataRequest;
 import net.ssehub.jacat.api.addon.data.Submission;
 import net.ssehub.jacat.api.addon.data.SubmissionCollection;
 import org.slf4j.Logger;
+import org.tmatesoft.svn.core.SVNDepth;
 import org.tmatesoft.svn.core.SVNException;
 import org.tmatesoft.svn.core.SVNURL;
+import org.tmatesoft.svn.core.auth.BasicAuthenticationManager;
 import org.tmatesoft.svn.core.auth.ISVNAuthenticationManager;
 import org.tmatesoft.svn.core.io.ISVNEditor;
 import org.tmatesoft.svn.core.io.SVNRepository;
 import org.tmatesoft.svn.core.io.SVNRepositoryFactory;
+import org.tmatesoft.svn.core.wc.SVNClientManager;
+import org.tmatesoft.svn.core.wc.SVNRevision;
+import org.tmatesoft.svn.core.wc.SVNUpdateClient;
 import org.tmatesoft.svn.core.wc.SVNWCUtil;
 
+import javax.xml.crypto.Data;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.Map;
 import java.util.stream.Stream;
 
 public class SVNDataCollector extends AbstractDataCollector {
 
-    private final SVNRepository repository;
-    private Logger logger;
-    private Path source;
+    private SVNUpdateClient updateClient;
+    private SVNURL svnUrl;
+    private Path workdir;
 
-    public SVNDataCollector(Logger logger) {
+    private Logger logger;
+
+    public SVNDataCollector(Logger logger, SVNUpdateClient updateClient, Path workdir, String url) {
         super("svn-java");
         this.logger = logger;
 
-        String URL = "svn://localhost/java";
         try {
-            SVNURL svnUrl = SVNURL.parseURIEncoded(URL);
-            repository = SVNRepositoryFactory.create(svnUrl);
-
-            ISVNAuthenticationManager authManager = SVNWCUtil
-                    .createDefaultAuthenticationManager("test", "secret");
-            repository.setAuthenticationManager(authManager);
+            this.svnUrl = SVNURL.parseURIEncoded(url);
         } catch (SVNException e) {
-            throw new RuntimeException(e);
+            this.logger.error("Couldn't parse URL: " + url, e);
+            throw new RuntimeException("Couldn't parse URL: " + url, e);
         }
+        this.workdir = workdir;
+        this.updateClient = updateClient;
     }
 
-    @Override
-    public void arrange(DataRequest request) {
+    private Path arrange(DataRequest request) {
+        Path directory = this.workdir.resolve(Path.of("request_" + request.hashCode()));
         try {
-            long latestRevision = repository.getLatestRevision();
-            Path directory = Files.createTempDirectory("jacat_svn_dc");
-            this.logger.info("Checkout revision " + latestRevision + ": " + directory.toString());
-            ISVNEditor exportEditor = new SimpleCheckoutEditor(directory.toFile());
-            repository.checkout(latestRevision, null, true, exportEditor);
-            this.source = directory;
-        } catch (SVNException | IOException e) {
-            throw new RuntimeException();
+            updateClient.doCheckout(this.svnUrl, directory.toFile(), SVNRevision.HEAD, SVNRevision.HEAD, SVNDepth.INFINITY, true);
+            return directory;
+        } catch (SVNException e) {
+            this.logger.error("Couldn't checkout SVN URL " + this.svnUrl, e);
+            throw new RuntimeException("Couldn't checkout SVN URL " + this.svnUrl, e);
         }
     }
 
@@ -62,8 +65,9 @@ public class SVNDataCollector extends AbstractDataCollector {
         SubmissionCollection submissions = new SubmissionCollection();
         if (dataRequest.getCourse() != null
                 && dataRequest.getHomework() == null
-                && dataRequest.getSubmission() == null) { // get all submissions for all homeworks
-            File baseCopyFrom = new File(this.source.toString());
+                && dataRequest.getSubmission() == null) {
+            Path source = arrange(dataRequest);
+            File baseCopyFrom = new File(source.toString());
             Stream<File> stream = Arrays.stream(baseCopyFrom.listFiles());
 
             stream.filter(File::isDirectory).forEach(homework -> {
