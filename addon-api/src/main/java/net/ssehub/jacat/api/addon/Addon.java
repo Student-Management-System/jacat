@@ -28,7 +28,7 @@ public abstract class Addon {
      * der Analyseplattform interagieren.
      * @return Laufende JacatPlatform
      */
-    public AbstractJacatWorker getJacatPlatform() {
+    public AbstractJacatWorker getWorker() {
         return worker;
     }
 

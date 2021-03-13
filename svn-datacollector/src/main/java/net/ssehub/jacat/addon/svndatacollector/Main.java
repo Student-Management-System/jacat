@@ -6,7 +6,7 @@ public class Main extends Addon {
 
     @Override
     public void onEnable() {
-        this.getJacatPlatform()
+        this.getWorker()
                 .registerDataCollector(this, new SVNDataCollector(this.getLogger()));
     }
 

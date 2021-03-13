@@ -6,7 +6,7 @@ public class Main extends Addon {
 
     @Override
     public void onEnable() {
-        this.getJacatPlatform().registerAnalysisTask(this, new JPlagAnalyzer());
+        this.getWorker().registerAnalysisTask(this, new JPlagAnalyzer());
         this.getLogger().info("JPlag Analyzer successfully loaded");
     }
 
