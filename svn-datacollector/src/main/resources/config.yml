@@ -1,0 +1,4 @@
+svn:
+  username: username
+  password: secret
+  url: svn://localhost/java

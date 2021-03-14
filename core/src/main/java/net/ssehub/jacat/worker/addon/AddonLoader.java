@@ -57,7 +57,11 @@ public class AddonLoader {
             this.addonManager.addAddon(classLoader.getLoadedAddon());
         } catch (AddonNotLoadableException | MalformedURLException e) {
             this.logger.error("Could not load addon: " + addonDescription.getName() + " - " + file.getAbsolutePath());
-            this.logger.error("Cause: " + e.getMessage());
+            String message = e.getCause().getMessage();
+            if (message == null) {
+                message = e.getMessage();
+            }
+            this.logger.error("Cause: " + message);
         }
     }
 

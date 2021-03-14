@@ -49,6 +49,7 @@ JaCAT is built on the following frameworks/toolkits:
 
 * [Spring Boot](https://spring.io)
 * [JPlag](http://jplag.ipd.kit.edu)
+* [SVNKit](https://svnkit.com/)
 
 
 <!-- GETTING STARTED -->

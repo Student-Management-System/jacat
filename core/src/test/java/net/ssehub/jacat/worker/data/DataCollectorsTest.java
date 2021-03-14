@@ -68,11 +68,6 @@ class DataCollectorsTest {
     private AbstractDataCollector createCollectorWithProtocol(String a_protocol) {
         return new AbstractDataCollector(a_protocol) {
             @Override
-            public void arrange(DataRequest request) {
-
-            }
-
-            @Override
             public SubmissionCollection collect(DataRequest request) {
                 return null;
             }

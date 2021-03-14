@@ -8,23 +8,12 @@ import org.slf4j.Logger;
 import org.tmatesoft.svn.core.SVNDepth;
 import org.tmatesoft.svn.core.SVNException;
 import org.tmatesoft.svn.core.SVNURL;
-import org.tmatesoft.svn.core.auth.BasicAuthenticationManager;
-import org.tmatesoft.svn.core.auth.ISVNAuthenticationManager;
-import org.tmatesoft.svn.core.io.ISVNEditor;
-import org.tmatesoft.svn.core.io.SVNRepository;
-import org.tmatesoft.svn.core.io.SVNRepositoryFactory;
-import org.tmatesoft.svn.core.wc.SVNClientManager;
 import org.tmatesoft.svn.core.wc.SVNRevision;
 import org.tmatesoft.svn.core.wc.SVNUpdateClient;
-import org.tmatesoft.svn.core.wc.SVNWCUtil;
 
-import javax.xml.crypto.Data;
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
-import java.util.Map;
 import java.util.stream.Stream;
 
 public class SVNDataCollector extends AbstractDataCollector {
@@ -35,16 +24,11 @@ public class SVNDataCollector extends AbstractDataCollector {
 
     private Logger logger;
 
-    public SVNDataCollector(Logger logger, SVNUpdateClient updateClient, Path workdir, String url) {
+    public SVNDataCollector(Logger logger, SVNUpdateClient updateClient, Path workdir, SVNURL url) {
         super("svn-java");
         this.logger = logger;
 
-        try {
-            this.svnUrl = SVNURL.parseURIEncoded(url);
-        } catch (SVNException e) {
-            this.logger.error("Couldn't parse URL: " + url, e);
-            throw new RuntimeException("Couldn't parse URL: " + url, e);
-        }
+        this.svnUrl = url;
         this.workdir = workdir;
         this.updateClient = updateClient;
     }
