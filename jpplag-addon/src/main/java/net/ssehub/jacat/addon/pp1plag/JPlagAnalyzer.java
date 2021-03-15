@@ -12,6 +12,7 @@ import java.nio.file.Path;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class JPlagAnalyzer extends AbstractAnalysisCapability {
 
@@ -40,14 +41,25 @@ public class JPlagAnalyzer extends AbstractAnalysisCapability {
         try {
             File jplag = new File(JPLAG_JAR);
 
-            ProcessBuilder processBuilder = new ProcessBuilder(
+            ProcessBuilder processBuilder = new ProcessBuilder().directory(workspace.toFile());
+            processBuilder.command(
                     "java",
                     "-jar",
-                    jplag.getAbsolutePath(),
-                    "l java19",
-                    workspace.toFile().getAbsolutePath())
-                    .directory(workspace.toFile());
+                    jplag.getCanonicalPath(),
+                    "-l", "java19",
+                    "-s",
+                    workspace.toFile().getCanonicalPath());
+            System.out.println(String.join(" ", processBuilder.command()));
+            processBuilder.redirectErrorStream(true);
             Process p = processBuilder.start();
+
+            try(BufferedReader input = new BufferedReader(new InputStreamReader(p.getErrorStream()))) {
+                String line;
+
+                while ((line = input.readLine()) != null) {
+                    System.err.println(line);
+                }
+            }
 
             List<Result> similarities = new ArrayList<>();
             Pattern pattern = Pattern.compile(REGEX);
@@ -57,9 +69,8 @@ public class JPlagAnalyzer extends AbstractAnalysisCapability {
 
                 while ((line = input.readLine()) != null) {
                     Matcher matcher = pattern.matcher(line);
+                    System.out.println(line);
                     if (matcher.matches()) {
-
-                        System.out.println(line);
                         Submission from = submissions.getSubmission(matcher.group(1)).get();
                         Submission to = submissions.getSubmission(matcher.group(2)).get();
 

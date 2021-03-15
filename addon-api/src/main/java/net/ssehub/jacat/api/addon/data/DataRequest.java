@@ -1,29 +1,43 @@
 package net.ssehub.jacat.api.addon.data;
 
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class DataRequest {
 
-    private String course;
-    private String homework;
-    private String submission;
+    private Pattern course;
+    private Pattern homework;
+    private Pattern submission;
 
     public DataRequest(String course, String homework, String submission) {
-        this.course = course;
-        this.homework = homework;
-        this.submission = submission;
+        this.course = course != null ? Pattern.compile(course) : Pattern.compile(".*");
+        this.homework = homework != null ? Pattern.compile(homework) : Pattern.compile(".*");
+        this.submission = submission != null ? Pattern.compile(submission) : Pattern.compile(".*");
     }
 
-    public String getCourse() {
+    public Pattern getCourse() {
         return course;
     }
 
-    public String getHomework() {
+    public boolean courseMatches(String str) {
+        return this.course.matcher(str).matches();
+    }
+
+    public Pattern getHomework() {
         return homework;
     }
 
-    public String getSubmission() {
+    public boolean homeworkMatches(String str) {
+        return this.homework.matcher(str).matches();
+    }
+
+    public Pattern getSubmission() {
         return submission;
+    }
+
+    public boolean submissionMatches(String str) {
+        return this.submission.matcher(str).matches();
     }
 
     @Override

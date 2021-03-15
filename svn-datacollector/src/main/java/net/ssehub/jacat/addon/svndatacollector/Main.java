@@ -24,6 +24,7 @@ import java.nio.file.Path;
 
 public class Main extends Addon {
 
+    public static final Path CONFIG_DIR = Path.of("debug", "addons", "svn-dc");
     private Configuration configuration;
 
     @Override
@@ -34,11 +35,10 @@ public class Main extends Addon {
                 BasicAuthenticationManager.newInstance(configuration.getSvn().getUsername(),
                         configuration.getSvn().getPassword().toCharArray()));
         SVNUpdateClient updateClient = clientManager.getUpdateClient();
-        Path workdir;
-        try {
-            workdir = Files.createTempDirectory("");
-        } catch (IOException e) {
-            throw new RuntimeException("Could not create temporary directory", e);
+
+        Path workdir = CONFIG_DIR.resolve("tmp");
+        if (!workdir.toFile().exists() && !workdir.toFile().mkdir()) {
+            throw new RuntimeException("Could not create temporary directory");
         }
 
         SVNURL svnUrl;
@@ -64,12 +64,11 @@ public class Main extends Addon {
     }
 
     private void initializeConfiguration() {
-        Path configDir = Path.of("debug", "addons", "svn-dc");
-        if (!configDir.toFile().exists() && !configDir.toFile().mkdir()) {
+        if (!CONFIG_DIR.toFile().exists() && !CONFIG_DIR.toFile().mkdir()) {
             throw new RuntimeException("Cannot create config directory for 'svndatacollector'");
         }
 
-        Path configFile = configDir.resolve(Path.of("config.yml"));
+        Path configFile = CONFIG_DIR.resolve(Path.of("config.yml"));
         try {
             copyExampleConfig(configFile);
         } catch (IOException e) {

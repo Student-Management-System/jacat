@@ -14,6 +14,7 @@ import org.tmatesoft.svn.core.wc.SVNUpdateClient;
 import java.io.File;
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.stream.Stream;
 
 public class SVNDataCollector extends AbstractDataCollector {
@@ -27,7 +28,6 @@ public class SVNDataCollector extends AbstractDataCollector {
     public SVNDataCollector(Logger logger, SVNUpdateClient updateClient, Path workdir, SVNURL url) {
         super("svn-java");
         this.logger = logger;
-
         this.svnUrl = url;
         this.workdir = workdir;
         this.updateClient = updateClient;
@@ -36,7 +36,12 @@ public class SVNDataCollector extends AbstractDataCollector {
     private Path arrange(DataRequest request) {
         Path directory = this.workdir.resolve(Path.of("request_" + request.hashCode()));
         try {
-            updateClient.doCheckout(this.svnUrl, directory.toFile(), SVNRevision.HEAD, SVNRevision.HEAD, SVNDepth.INFINITY, true);
+            updateClient.doCheckout(this.svnUrl,
+                    directory.toFile(),
+                    SVNRevision.HEAD,
+                    SVNRevision.HEAD,
+                    SVNDepth.INFINITY,
+                    true);
             return directory;
         } catch (SVNException e) {
             this.logger.error("Couldn't checkout SVN URL " + this.svnUrl, e);
@@ -47,27 +52,29 @@ public class SVNDataCollector extends AbstractDataCollector {
     @Override
     public SubmissionCollection collect(DataRequest dataRequest) {
         SubmissionCollection submissions = new SubmissionCollection();
-        if (dataRequest.getCourse() != null
-                && dataRequest.getHomework() == null
-                && dataRequest.getSubmission() == null) {
-            Path source = arrange(dataRequest);
-            File baseCopyFrom = new File(source.toString());
-            Stream<File> stream = Arrays.stream(baseCopyFrom.listFiles());
 
-            stream.filter(File::isDirectory).forEach(homework -> {
-                File[] submissionFiles = homework.listFiles();
-                for(File submissionFolder : submissionFiles) {
-                    if (submissionFolder.isFile()) {
-                        continue;
-                    }
-                    Submission java = new Submission("java",
-                            homework.getName(),
-                            submissionFolder.getName(),
-                            submissionFolder.toPath());
-                    submissions.add(java);
-                }
-            });
-        }
+        Path source = this.arrange(dataRequest);
+        File base = source.toFile();
+
+        Stream<File> homeworksStream = Arrays.stream(Objects.requireNonNull(base.listFiles()))
+                .filter(File::isDirectory)
+                .filter(file -> !file.getName().contains(".svn"))
+                .filter(file -> dataRequest.homeworkMatches(file.getName()));
+
+
+        homeworksStream.forEach(homework -> {
+            Stream<File> submissionsStream = Arrays.stream(Objects.requireNonNull(homework.listFiles()))
+                    .filter(File::isDirectory)
+                    .filter(file -> !file.getName().contains(".svn"))
+                    .filter(file -> dataRequest.submissionMatches(file.toPath().getFileName().toString()));
+
+            submissionsStream.map(submission -> new Submission("java",
+                    homework.getName(),
+                    submission.getName(),
+                    submission.toPath())
+            ).forEach(submissions::add);
+        });
+
 
         return submissions;
     }

@@ -14,6 +14,10 @@ public class SubmissionCollection implements Iterable<Submission> {
         this.submissions.add(submission);
     }
 
+    public void addAll(Collection<Submission> submissions) {
+        this.submissions.addAll(submissions);
+    }
+
     public Optional<Submission> getSubmission(String folderName) {
         return submissions.stream()
             .filter(submission ->
