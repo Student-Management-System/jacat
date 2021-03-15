@@ -4,6 +4,7 @@ import net.ssehub.jacat.api.addon.AddonDescription;
 import net.ssehub.jacat.worker.JacatWorker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.yaml.snakeyaml.Yaml;
@@ -28,15 +29,11 @@ public class AddonLoader {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    public AddonLoader(@Value("${workdir:}") Path workdir,
+    public AddonLoader(@Qualifier("workdir") Path workdir,
             JacatWorker jacatPlatform,
             AddonManager addonManager) {
         this.jacatPlatform = jacatPlatform;
         this.addonManager = addonManager;
-        if (workdir == null) {
-            workdir = Paths.get(".").toAbsolutePath().normalize();
-        }
-
         loadAddonFolder(workdir.resolve("addons").toFile());
     }
 

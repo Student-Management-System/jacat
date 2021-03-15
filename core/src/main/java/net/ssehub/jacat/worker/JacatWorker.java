@@ -7,6 +7,7 @@ import net.ssehub.jacat.api.addon.data.AbstractDataCollector;
 import net.ssehub.jacat.api.addon.task.AbstractAnalysisCapability;
 import net.ssehub.jacat.api.analysis.IAnalysisCapabilities;
 import net.ssehub.jacat.worker.data.DataCollectors;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -25,13 +26,10 @@ public class JacatWorker extends AbstractJacatWorker {
     private DataCollectors dataCollectors;
     private Path workdir;
 
-    public JacatWorker(@Value("${workdir:}") Path workdir,
+    public JacatWorker(@Qualifier("workdir") Path workdir,
                        IAnalysisCapabilities<Addon> analysisCapabilities,
                        DataCollectors dataCollectors) {
         this.workdir = workdir;
-        if (this.workdir == null) {
-            this.workdir = Paths.get(".").toAbsolutePath().normalize();
-        }
         this.analysisCapabilities = analysisCapabilities;
         this.dataCollectors = dataCollectors;
     }

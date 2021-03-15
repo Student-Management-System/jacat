@@ -21,7 +21,8 @@ public class CopySubmissionVisitor implements SubmissionVisitor {
         String salt = UUID.randomUUID().toString()
                 .replaceAll("-", "")
                 .substring(0, 6);
-        String folderName = "sub_" + submission.getSubmission() + "_" + salt;
+        String folderName = "sub_" + submission.getSubmission()
+                .replaceAll("[^a-zA-Z0-9]*", "") + "_" + salt;
 
         Path oldBasePath = submission.getBasePath();
         Path newBasePath = this.target.resolve(folderName);

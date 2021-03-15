@@ -6,17 +6,23 @@ import net.ssehub.jacat.api.addon.task.PreparedTask;
 import net.ssehub.jacat.api.addon.task.Task;
 import net.ssehub.jacat.worker.data.DataCollectors;
 import net.ssehub.jacat.worker.data.CopySubmissionVisitor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
+import java.nio.file.Path;
 
 @Component
 @Slf4j
 public class TaskPreparer {
 
+    private final Path workdir;
     private final DataCollectors dataCollectors;
 
-    public TaskPreparer(DataCollectors dataCollectors) {
+
+    public TaskPreparer(@Qualifier("workdir") Path workdir,
+                        DataCollectors dataCollectors) {
+        this.workdir = workdir;
         this.dataCollectors = dataCollectors;
     }
 
@@ -26,8 +32,8 @@ public class TaskPreparer {
 
         PreparedTask preparedTask = new PreparedTask(task);
         AbstractDataCollector collector = this.dataCollectors.getCollector(data.getProtocol());
-        File workspace = new File(new File(".", "debug"), "workspace");
-        File taskWorkspace = new File(workspace, "tmp_" + task.getId());
+        File taskWorkspace = this.workdir.resolve("workspace")
+                .resolve("tmp_" + task.getId()).toFile();
         taskWorkspace.mkdirs();
 
         preparedTask.setWorkspace(taskWorkspace.toPath());
