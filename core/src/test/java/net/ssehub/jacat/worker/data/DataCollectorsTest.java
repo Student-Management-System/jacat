@@ -73,7 +73,7 @@ class DataCollectorsTest {
             }
 
             @Override
-            public void clear(DataRequest request) {
+            public void cleanup(DataRequest request) {
 
             }
         };

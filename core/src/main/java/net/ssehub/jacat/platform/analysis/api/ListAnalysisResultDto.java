@@ -23,7 +23,7 @@ public class ListAnalysisResultDto {
     private String slug;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @JsonIgnoreProperties({"protocol"})
+    @JsonIgnoreProperties({"protocol", "request"})
     private DataSection data;
     private Map<String, Object> request = new HashMap<>();
     private Map<String, Object> result = new HashMap<>();

@@ -1,5 +1,6 @@
 package net.ssehub.jacat.worker.analysis;
 
+import lombok.extern.slf4j.Slf4j;
 import net.ssehub.jacat.api.addon.data.*;
 import net.ssehub.jacat.api.addon.task.PreparedTask;
 import net.ssehub.jacat.api.addon.task.Task;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Component;
 import java.io.File;
 
 @Component
+@Slf4j
 public class TaskPreparer {
 
     private final DataCollectors dataCollectors;
@@ -20,7 +22,7 @@ public class TaskPreparer {
 
     public PreparedTask prepare(Task task) {
         DataSection data = task.getDataConfiguration();
-        DataRequest dataRequest = data.getRequest();
+        DataRequest dataRequest = new DataRequest(data.getHomework(), data.getSubmission());
 
         PreparedTask preparedTask = new PreparedTask(task);
         AbstractDataCollector collector = this.dataCollectors.getCollector(data.getProtocol());
@@ -33,14 +35,14 @@ public class TaskPreparer {
         try {
             collection = collector.collect(dataRequest);
         } catch (RuntimeException e) {
+            e.printStackTrace();
             throw new ResourceNotAvailableException();
         }
 
         collection.accept(new CopySubmissionVisitor(taskWorkspace.toPath()));
-
-        collector.clear(dataRequest);
-
         preparedTask.setSubmissions(collection);
+
+        collector.cleanup(dataRequest);
 
         return preparedTask;
     }

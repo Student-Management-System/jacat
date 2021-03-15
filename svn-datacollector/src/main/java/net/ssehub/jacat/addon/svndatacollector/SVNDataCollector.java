@@ -55,6 +55,8 @@ public class SVNDataCollector extends AbstractDataCollector {
 
     @Override
     public SubmissionCollection collect(DataRequest dataRequest) {
+        Objects.requireNonNull(dataRequest);
+
         SubmissionCollection submissions = new SubmissionCollection();
 
         Path source = this.arrange(dataRequest);
@@ -84,7 +86,7 @@ public class SVNDataCollector extends AbstractDataCollector {
     }
 
     @Override
-    public void clear(DataRequest request) {
+    public void cleanup(DataRequest request) {
         Path directory = this.workdir.resolve(Path.of("request_" + request.hashCode()));
         try {
             Files.walk(directory)
@@ -92,7 +94,7 @@ public class SVNDataCollector extends AbstractDataCollector {
                     .map(Path::toFile)
                     .forEach(File::delete);
         } catch (IOException e) {
-
+            this.logger.error("Cannot delete tmp folder: " + directory.toString(), e);
         }
     }
 
