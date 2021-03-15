@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import net.ssehub.jacat.addon.svndatacollector.config.Configuration;
 import net.ssehub.jacat.api.addon.Addon;
-import org.tmatesoft.svn.core.SVNDepth;
 import org.tmatesoft.svn.core.SVNException;
 import org.tmatesoft.svn.core.SVNURL;
 import org.tmatesoft.svn.core.auth.BasicAuthenticationManager;
@@ -12,11 +11,7 @@ import org.tmatesoft.svn.core.wc.SVNClientManager;
 import org.tmatesoft.svn.core.wc.SVNInfo;
 import org.tmatesoft.svn.core.wc.SVNRevision;
 import org.tmatesoft.svn.core.wc.SVNUpdateClient;
-import org.yaml.snakeyaml.Yaml;
-import org.yaml.snakeyaml.constructor.Constructor;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -24,11 +19,13 @@ import java.nio.file.Path;
 
 public class Main extends Addon {
 
-    public static final Path CONFIG_DIR = Path.of("debug", "addons", "svn-dc");
+    private Path pluginDir = Path.of( "addons", "svn-dc");
     private Configuration configuration;
 
     @Override
     public void onEnable() {
+        this.pluginDir = this.getWorker().getWorkingDir().resolve(this.pluginDir);
+
         initializeConfiguration();
 
         SVNClientManager clientManager = SVNClientManager.newInstance(null,
@@ -36,7 +33,7 @@ public class Main extends Addon {
                         configuration.getSvn().getPassword().toCharArray()));
         SVNUpdateClient updateClient = clientManager.getUpdateClient();
 
-        Path workdir = CONFIG_DIR.resolve("tmp");
+        Path workdir = pluginDir.resolve("tmp");
         if (!workdir.toFile().exists() && !workdir.toFile().mkdir()) {
             throw new RuntimeException("Could not create temporary directory");
         }
@@ -64,11 +61,11 @@ public class Main extends Addon {
     }
 
     private void initializeConfiguration() {
-        if (!CONFIG_DIR.toFile().exists() && !CONFIG_DIR.toFile().mkdir()) {
+        if (!pluginDir.toFile().exists() && !pluginDir.toFile().mkdir()) {
             throw new RuntimeException("Cannot create config directory for 'svndatacollector'");
         }
 
-        Path configFile = CONFIG_DIR.resolve(Path.of("config.yml"));
+        Path configFile = pluginDir.resolve(Path.of("config.yml"));
         try {
             copyExampleConfig(configFile);
         } catch (IOException e) {

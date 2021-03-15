@@ -4,6 +4,8 @@ import net.ssehub.jacat.api.addon.Addon;
 import net.ssehub.jacat.api.addon.data.AbstractDataCollector;
 import net.ssehub.jacat.api.addon.task.AbstractAnalysisCapability;
 
+import java.nio.file.Path;
+
 /**
  * Diese Klasse beschreibt die Möglichkeiten auf einer
  * Analyse Plattform, die eine Erweiterung (Addon) hat.
@@ -38,5 +40,7 @@ public abstract class AbstractJacatWorker {
     public abstract void registerAnalysisTask(Addon addon, AbstractAnalysisCapability capability);
 
     public abstract void registerDataCollector(Addon addon, AbstractDataCollector collector);
+
+    public abstract Path getWorkingDir();
 
 }

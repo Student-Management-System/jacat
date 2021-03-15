@@ -4,6 +4,7 @@ import net.ssehub.jacat.api.addon.AddonDescription;
 import net.ssehub.jacat.worker.JacatWorker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.yaml.snakeyaml.Yaml;
 
@@ -11,8 +12,11 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Enumeration;
 import java.util.Map;
+import java.util.Optional;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -24,10 +28,16 @@ public class AddonLoader {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    public AddonLoader(JacatWorker jacatPlatform, AddonManager addonManager) {
+    public AddonLoader(@Value("${workdir:}") Path workdir,
+            JacatWorker jacatPlatform,
+            AddonManager addonManager) {
         this.jacatPlatform = jacatPlatform;
         this.addonManager = addonManager;
-        loadAddonFolder(new File("./debug/addons"));
+        if (workdir == null) {
+            workdir = Paths.get(".").toAbsolutePath().normalize();
+        }
+
+        loadAddonFolder(workdir.resolve("addons").toFile());
     }
 
     public void loadAddonFolder(File folder) {

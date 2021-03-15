@@ -1,21 +1,37 @@
 package net.ssehub.jacat.worker;
 
+import lombok.extern.slf4j.Slf4j;
 import net.ssehub.jacat.api.AbstractJacatWorker;
 import net.ssehub.jacat.api.addon.Addon;
 import net.ssehub.jacat.api.addon.data.AbstractDataCollector;
 import net.ssehub.jacat.api.addon.task.AbstractAnalysisCapability;
 import net.ssehub.jacat.api.analysis.IAnalysisCapabilities;
 import net.ssehub.jacat.worker.data.DataCollectors;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Optional;
+
 @Service
+@Slf4j
 public class JacatWorker extends AbstractJacatWorker {
 
     private IAnalysisCapabilities<Addon> analysisCapabilities;
     private DataCollectors dataCollectors;
+    private Path workdir;
 
-    public JacatWorker(IAnalysisCapabilities<Addon> analysisCapabilities,
+    public JacatWorker(@Value("${workdir:}") Path workdir,
+                       IAnalysisCapabilities<Addon> analysisCapabilities,
                        DataCollectors dataCollectors) {
+        this.workdir = workdir;
+        if (this.workdir == null) {
+            this.workdir = Paths.get(".").toAbsolutePath().normalize();
+        }
         this.analysisCapabilities = analysisCapabilities;
         this.dataCollectors = dataCollectors;
     }
@@ -42,6 +58,11 @@ public class JacatWorker extends AbstractJacatWorker {
         }
 
         this.dataCollectors.register(addon, collector);
+    }
+
+    @Override
+    public Path getWorkingDir() {
+        return this.workdir;
     }
 
     private static class AnalysisCapabilityAlreadyRegisteredException extends RuntimeException {

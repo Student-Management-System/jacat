@@ -7,6 +7,8 @@ import org.junit.jupiter.api.Test;
 import java.io.File;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.Path;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -17,7 +19,7 @@ class AddonClassLoaderTest {
         assertDoesNotThrow(() -> {
             AddonClassLoader addonClassLoader = new AddonClassLoader(getTestAddonJar(),
                     new AddonDescription("net.ssehub.test.addon.Functional", "TestAddon"),
-                    new JacatWorker(null, null));
+                    new JacatWorker(Path.of("."), null, null));
 
             assertNotNull(addonClassLoader.getLoadedAddon());
         });
@@ -28,7 +30,7 @@ class AddonClassLoaderTest {
         assertThrows(AddonNotLoadableException.class, () -> {
             AddonClassLoader addonClassLoader = new AddonClassLoader(getTestAddonJar(),
                     new AddonDescription("net.ssehub.test.addon.NonFunctional", "TestAddon"),
-                    new JacatWorker(null, null));
+                    new JacatWorker(Path.of("./"), null, null));
         });
 
     }
