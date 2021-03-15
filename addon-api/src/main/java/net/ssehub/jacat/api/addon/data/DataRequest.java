@@ -1,27 +1,16 @@
 package net.ssehub.jacat.api.addon.data;
 
 import java.util.Objects;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class DataRequest {
 
-    private Pattern course;
     private Pattern homework;
     private Pattern submission;
 
-    public DataRequest(String course, String homework, String submission) {
-        this.course = course != null ? Pattern.compile(course) : Pattern.compile(".*");
+    public DataRequest(String homework, String submission) {
         this.homework = homework != null ? Pattern.compile(homework) : Pattern.compile(".*");
         this.submission = submission != null ? Pattern.compile(submission) : Pattern.compile(".*");
-    }
-
-    public Pattern getCourse() {
-        return course;
-    }
-
-    public boolean courseMatches(String str) {
-        return this.course.matcher(str).matches();
     }
 
     public Pattern getHomework() {
@@ -45,13 +34,12 @@ public class DataRequest {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         DataRequest that = (DataRequest) o;
-        return Objects.equals(course, that.course) &&
-                Objects.equals(homework, that.homework) &&
-                Objects.equals(submission, that.submission);
+        return Objects.equals(homework.pattern(), that.homework.pattern()) &&
+                Objects.equals(submission.pattern(), that.submission.pattern());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(course, homework, submission);
+        return Objects.hash(homework.pattern(), submission.pattern());
     }
 }

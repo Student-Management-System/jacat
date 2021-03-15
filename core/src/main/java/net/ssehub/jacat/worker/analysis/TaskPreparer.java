@@ -4,15 +4,15 @@ import net.ssehub.jacat.api.addon.data.*;
 import net.ssehub.jacat.api.addon.task.PreparedTask;
 import net.ssehub.jacat.api.addon.task.Task;
 import net.ssehub.jacat.worker.data.DataCollectors;
-import net.ssehub.jacat.worker.data.MoveSubmissionVisitor;
-import org.springframework.stereotype.Service;
+import net.ssehub.jacat.worker.data.CopySubmissionVisitor;
+import org.springframework.stereotype.Component;
 
 import java.io.File;
 
-@Service
+@Component
 public class TaskPreparer {
 
-    private DataCollectors dataCollectors;
+    private final DataCollectors dataCollectors;
 
     public TaskPreparer(DataCollectors dataCollectors) {
         this.dataCollectors = dataCollectors;
@@ -20,7 +20,7 @@ public class TaskPreparer {
 
     public PreparedTask prepare(Task task) {
         DataSection data = task.getDataConfiguration();
-        DataRequest dataRequest = new DataRequest(data.getCourse(), data.getHomework(), data.getSubmission());
+        DataRequest dataRequest = data.getRequest();
 
         PreparedTask preparedTask = new PreparedTask(task);
         AbstractDataCollector collector = this.dataCollectors.getCollector(data.getProtocol());
@@ -36,8 +36,10 @@ public class TaskPreparer {
             throw new ResourceNotAvailableException();
         }
 
-        collection.accept(new MoveSubmissionVisitor(taskWorkspace.toPath()));
-        // TODO: Check if created Files are in Folder
+        collection.accept(new CopySubmissionVisitor(taskWorkspace.toPath()));
+
+        collector.clear(dataRequest);
+
         preparedTask.setSubmissions(collection);
 
         return preparedTask;

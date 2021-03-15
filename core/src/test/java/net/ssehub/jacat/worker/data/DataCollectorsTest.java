@@ -71,6 +71,11 @@ class DataCollectorsTest {
             public SubmissionCollection collect(DataRequest request) {
                 return null;
             }
+
+            @Override
+            public void clear(DataRequest request) {
+
+            }
         };
     }
 

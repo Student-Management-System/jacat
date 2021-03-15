@@ -50,6 +50,10 @@ public class DataSection {
         this.protocol = protocol;
     }
 
+    public DataRequest getRequest() {
+        return new DataRequest(this.homework, this.submission);
+    }
+
     public DataSection clone() {
         return new DataSection(this.getProtocol(),
                 this.getCourse(),

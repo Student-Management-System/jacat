@@ -1,5 +1,6 @@
 package net.ssehub.jacat.addon.svndatacollector;
 
+import com.sun.jna.platform.FileUtils;
 import net.ssehub.jacat.api.addon.data.AbstractDataCollector;
 import net.ssehub.jacat.api.addon.data.DataRequest;
 import net.ssehub.jacat.api.addon.data.Submission;
@@ -12,8 +13,11 @@ import org.tmatesoft.svn.core.wc.SVNRevision;
 import org.tmatesoft.svn.core.wc.SVNUpdateClient;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Objects;
 import java.util.stream.Stream;
 
@@ -77,6 +81,19 @@ public class SVNDataCollector extends AbstractDataCollector {
 
 
         return submissions;
+    }
+
+    @Override
+    public void clear(DataRequest request) {
+        Path directory = this.workdir.resolve(Path.of("request_" + request.hashCode()));
+        try {
+            Files.walk(directory)
+                    .sorted(Comparator.reverseOrder())
+                    .map(Path::toFile)
+                    .forEach(File::delete);
+        } catch (IOException e) {
+
+        }
     }
 
 }

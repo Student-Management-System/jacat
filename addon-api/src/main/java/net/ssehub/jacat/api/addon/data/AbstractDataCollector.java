@@ -13,4 +13,6 @@ public abstract class AbstractDataCollector {
     }
 
     public abstract SubmissionCollection collect(DataRequest request);
+
+    public abstract void clear(DataRequest request);
 }

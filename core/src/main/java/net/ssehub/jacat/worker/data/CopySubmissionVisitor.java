@@ -8,11 +8,11 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.UUID;
 
-public class MoveSubmissionVisitor implements SubmissionVisitor {
+public class CopySubmissionVisitor implements SubmissionVisitor {
 
     private Path target;
 
-    public MoveSubmissionVisitor(Path target) {
+    public CopySubmissionVisitor(Path target) {
         this.target = target;
     }
 
@@ -30,12 +30,12 @@ public class MoveSubmissionVisitor implements SubmissionVisitor {
             FolderUtils.copyFolder(target, oldBasePath, folderName);
             submission.setBasePath(newBasePath);
         } catch (IOException e) {
-            throw new CannotMoveSubmissionException(submission, e);
+            throw new CannotCopySubmissionException(submission, e);
         }
     }
 
-    private class CannotMoveSubmissionException extends RuntimeException {
-        public CannotMoveSubmissionException(Submission submission, Throwable cause) {
+    private class CannotCopySubmissionException extends RuntimeException {
+        public CannotCopySubmissionException(Submission submission, Throwable cause) {
             super("Cannot move Submission: ", cause);
         }
     }
