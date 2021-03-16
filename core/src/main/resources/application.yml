@@ -4,6 +4,7 @@ spring:
       authentication-database: admin
       uri: mongodb://root:example@127.0.0.1
       database: jacat
+
 analysis:
   max-tasks: -1
 courses:

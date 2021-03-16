@@ -14,3 +14,8 @@
 I8,      ,8'   +          *    .            *     +     .       .       *        .
 `Y8,___,d8'  .   * +         .   *     .   *     +          .     *        +
   "Y888P"    +           +        .           .      +       *            +    .
+
+====================================================
+${Ansi.GREEN} :: Spring Boot${spring-boot.formatted-version} :: ${Ansi.DEFAULT}
+${Ansi.GREEN} :: JaCAT (v${version}) :: ${Ansi.DEFAULT}
+${Ansi.BLUE} :: Build Date: ${timestamp} :: ${Ansi.DEFAULT}
