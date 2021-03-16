@@ -12,6 +12,7 @@ public class RuntimeConfiguration {
 
     @Bean("workdir")
     public Path workdir(@Value("${workdir:}") Path workdir) {
+        System.out.println("workdir = " + workdir);
         if (workdir == null) {
             workdir = Paths.get(".").toAbsolutePath().normalize();
         }

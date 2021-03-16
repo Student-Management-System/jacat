@@ -41,8 +41,7 @@ public class TaskPreparer {
         try {
             collection = collector.collect(dataRequest);
         } catch (RuntimeException e) {
-            e.printStackTrace();
-            throw new ResourceNotAvailableException();
+            throw new ResourceNotAvailableException(e);
         }
 
         collection.accept(new CopySubmissionVisitor(taskWorkspace.toPath()));

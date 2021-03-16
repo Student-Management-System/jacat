@@ -8,6 +8,7 @@ import net.ssehub.jacat.api.addon.task.Task;
 import net.ssehub.jacat.api.analysis.IAnalysisCapabilities;
 import net.ssehub.jacat.api.analysis.TaskCompletion;
 import net.ssehub.jacat.worker.analysis.TaskPreparer;
+import net.ssehub.jacat.worker.analysis.TaskScrapper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -19,11 +20,14 @@ public class AnalysisTaskProcessor {
 
     private final IAnalysisCapabilities<Addon> capabilities;
     private final TaskPreparer taskPreparer;
+    private final TaskScrapper taskScrapper;
 
     public AnalysisTaskProcessor(IAnalysisCapabilities<Addon> capabilities,
-                                 TaskPreparer taskPreparer) {
+                                 TaskPreparer taskPreparer,
+                                 TaskScrapper taskScrapper) {
         this.capabilities = capabilities;
         this.taskPreparer = taskPreparer;
+        this.taskScrapper = taskScrapper;
     }
 
 
@@ -31,7 +35,7 @@ public class AnalysisTaskProcessor {
     public void process(Task task, TaskCompletion completion) {
         AbstractAnalysisCapability capability = this.capabilities.getCapability(task.getSlug(), task.getLanguage());
 
-        this.log.info("Started AnalysingTask (#" + task.getId() + "): [slug=\"" + task.getSlug()
+        log.info("Started AnalysingTask (#" + task.getId() + "): [slug=\"" + task.getSlug()
                 + "\", language=\"" + task.getLanguage() + "\"]");
         long timeStart = System.currentTimeMillis();
 
@@ -39,6 +43,7 @@ public class AnalysisTaskProcessor {
         try {
             PreparedTask preparedTask = this.taskPreparer.prepare(task);
             result = capability.run(preparedTask);
+            this.taskScrapper.scrap(preparedTask);
         } catch(RuntimeException e) {
             result.setFailedResult(Collections.singletonMap("message", e.getMessage()));
         }
@@ -55,6 +60,8 @@ public class AnalysisTaskProcessor {
         log.info("Finished AnalysingTask (#" + result.getId() + ") in "
                 + time + "ms with status [" + status + "]");
         completion.finish(task);
+
+
     }
 
 }
