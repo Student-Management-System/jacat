@@ -1,11 +1,12 @@
 package net.ssehub.jacat.worker.data;
 
-import java.io.IOException;
-import java.nio.file.Path;
-import java.util.UUID;
 import net.ssehub.jacat.api.addon.data.FolderUtils;
 import net.ssehub.jacat.api.addon.data.Submission;
 import net.ssehub.jacat.api.addon.data.SubmissionVisitor;
+
+import java.io.IOException;
+import java.nio.file.Path;
+import java.util.UUID;
 
 public class CopySubmissionVisitor implements SubmissionVisitor {
     private Path target;
@@ -19,15 +20,15 @@ public class CopySubmissionVisitor implements SubmissionVisitor {
         String salt = UUID.randomUUID().toString().replaceAll("-", "").substring(0, 6);
         String folderName =
             "sub_" +
-            submission.getSubmission().replaceAll("[^a-zA-Z0-9]*", "") +
-            "_" +
-            salt;
+                submission.getSubmission().replaceAll("[^a-zA-Z0-9]*", "") +
+                "_" +
+                salt;
 
         Path oldBasePath = submission.getBasePath();
         Path newBasePath = this.target.resolve(folderName);
 
         try {
-            FolderUtils.copyFolder(target, oldBasePath, folderName);
+            FolderUtils.copyFolder(oldBasePath, target, folderName);
             submission.setBasePath(newBasePath);
         } catch (IOException e) {
             throw new CannotCopySubmissionException(submission, e);
