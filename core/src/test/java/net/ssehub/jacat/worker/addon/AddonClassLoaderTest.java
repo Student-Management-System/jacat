@@ -1,38 +1,48 @@
 package net.ssehub.jacat.worker.addon;
 
-import net.ssehub.jacat.api.addon.AddonDescription;
-import net.ssehub.jacat.worker.JacatWorker;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.File;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
+import net.ssehub.jacat.api.addon.AddonDescription;
+import net.ssehub.jacat.worker.JacatWorker;
+import org.junit.jupiter.api.Test;
 
 class AddonClassLoaderTest {
 
     @Test
     void newAddonClassLoader_withValidSimpleAddon_loadsAddon() {
-        assertDoesNotThrow(() -> {
-            AddonClassLoader addonClassLoader = new AddonClassLoader(getTestAddonJar(),
+        assertDoesNotThrow(
+            () -> {
+                AddonClassLoader addonClassLoader = new AddonClassLoader(
+                    getTestAddonJar(),
                     new AddonDescription("net.ssehub.test.addon.Functional", "TestAddon"),
-                    new JacatWorker(Path.of("."), null, null));
+                    new JacatWorker(Path.of("."), null, null)
+                );
 
-            assertNotNull(addonClassLoader.getLoadedAddon());
-        });
+                assertNotNull(addonClassLoader.getLoadedAddon());
+            }
+        );
     }
 
     @Test
     void newAddonClassLoader_withInvalidSimpleAddon_doesNotLoadAddon() {
-        assertThrows(AddonNotLoadableException.class, () -> {
-            AddonClassLoader addonClassLoader = new AddonClassLoader(getTestAddonJar(),
-                    new AddonDescription("net.ssehub.test.addon.NonFunctional", "TestAddon"),
-                    new JacatWorker(Path.of("./"), null, null));
-        });
-
+        assertThrows(
+            AddonNotLoadableException.class,
+            () -> {
+                AddonClassLoader addonClassLoader = new AddonClassLoader(
+                    getTestAddonJar(),
+                    new AddonDescription(
+                        "net.ssehub.test.addon.NonFunctional",
+                        "TestAddon"
+                    ),
+                    new JacatWorker(Path.of("./"), null, null)
+                );
+            }
+        );
     }
 
     private File getTestAddonJar() throws URISyntaxException {

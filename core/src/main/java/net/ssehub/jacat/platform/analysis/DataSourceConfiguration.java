@@ -7,8 +7,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
 @Configuration
-@EnableAutoConfiguration(exclude = {MongoAutoConfiguration.class,
-        MongoDataAutoConfiguration.class})
+@EnableAutoConfiguration(
+    exclude = { MongoAutoConfiguration.class, MongoDataAutoConfiguration.class }
+)
 @Profile("local")
-public class DataSourceConfiguration {
-}
+public class DataSourceConfiguration {}

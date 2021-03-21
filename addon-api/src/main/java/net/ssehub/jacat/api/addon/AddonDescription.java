@@ -1,6 +1,5 @@
 package net.ssehub.jacat.api.addon;
 
-
 import java.util.Objects;
 
 /**
@@ -10,9 +9,8 @@ import java.util.Objects;
  * Klasse angelegt, sodass ein Addon hiermit arbeiten kann.
  */
 public class AddonDescription {
-
-    private String mainClass;
-    private String name;
+    private final String mainClass;
+    private final String name;
 
     public AddonDescription(String mainClass, String name) {
         this.mainClass = mainClass;

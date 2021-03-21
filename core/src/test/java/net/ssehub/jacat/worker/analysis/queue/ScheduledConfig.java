@@ -7,5 +7,4 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @Configuration
 @EnableScheduling
 @ComponentScan("net.ssehub.jacat.worker")
-public class ScheduledConfig {
-}
+public class ScheduledConfig {}

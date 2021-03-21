@@ -1,12 +1,10 @@
 package net.ssehub.jacat.api.addon.task;
 
-import net.ssehub.jacat.api.addon.data.DataSection;
-
 import java.util.Map;
 import java.util.Objects;
+import net.ssehub.jacat.api.addon.data.DataSection;
 
 public class Task {
-
     private String id;
 
     private String slug;
@@ -23,10 +21,16 @@ public class Task {
 
     private Map<String, Object> result;
 
-    public Task() {
-    }
+    public Task() {}
 
-    public Task(String id, String slug, String language, DataSection dataSection, Map<String, Object> request, TaskFinish finish) {
+    public Task(
+        String id,
+        String slug,
+        String language,
+        DataSection dataSection,
+        Map<String, Object> request,
+        TaskFinish finish
+    ) {
         this.id = id;
         this.slug = slug;
         this.language = language;
@@ -35,13 +39,15 @@ public class Task {
         this.finish = finish;
     }
 
-    public Task(String id,
-                String slug,
-                String language,
-                Status status,
-                DataSection dataSection,
-                Map<String, Object> request,
-                Map<String, Object> result) {
+    public Task(
+        String id,
+        String slug,
+        String language,
+        Status status,
+        DataSection dataSection,
+        Map<String, Object> request,
+        Map<String, Object> result
+    ) {
         this.id = id;
         this.slug = slug;
         this.language = language;
@@ -54,10 +60,6 @@ public class Task {
     public void setResult(Status status, Map<String, Object> result) {
         this.status = status;
         this.result = result;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public Map<String, Object> getRequest() {
@@ -76,10 +78,13 @@ public class Task {
         return id;
     }
 
+    public void setId(String id) {
+        this.id = id;
+    }
+
     public DataSection getDataConfiguration() {
         return this.dataConfiguration;
     }
-
 
     public Status getStatus() {
         return status;
@@ -89,7 +94,6 @@ public class Task {
         return result;
     }
 
-
     public void finish() {
         if (this.finish != null) {
             this.finish.finish(this);
@@ -98,8 +102,12 @@ public class Task {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         Task task = (Task) o;
         return Objects.equals(id, task.id);
     }
@@ -111,21 +119,32 @@ public class Task {
 
     @Override
     public String toString() {
-        return "Task{" +
-                "id='" + id + '\'' +
-                ", slug='" + slug + '\'' +
-                ", language='" + language + '\'' +
-                ", status=" + status +
-                ", finish=" + finish +
-                ", dataConfiguration=" + dataConfiguration +
-                ", request=" + request +
-                ", result=" + result +
-                '}';
+        return (
+            "Task{id='" +
+            id +
+            '\'' +
+            ", slug='" +
+            slug +
+            '\'' +
+            ", language='" +
+            language +
+            '\'' +
+            ", status=" +
+            status +
+            ", finish=" +
+            finish +
+            ", dataConfiguration=" +
+            dataConfiguration +
+            ", request=" +
+            request +
+            ", result=" +
+            result +
+            '}'
+        );
     }
 
     public enum Status {
         SUCCESSFUL(),
         FAILED()
     }
-
 }

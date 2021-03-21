@@ -1,15 +1,13 @@
 package net.ssehub.jacat.worker.data;
 
+import java.io.IOException;
+import java.nio.file.Path;
+import java.util.UUID;
 import net.ssehub.jacat.api.addon.data.FolderUtils;
 import net.ssehub.jacat.api.addon.data.Submission;
 import net.ssehub.jacat.api.addon.data.SubmissionVisitor;
 
-import java.io.IOException;
-import java.nio.file.Path;
-import java.util.UUID;
-
 public class CopySubmissionVisitor implements SubmissionVisitor {
-
     private Path target;
 
     public CopySubmissionVisitor(Path target) {
@@ -18,11 +16,12 @@ public class CopySubmissionVisitor implements SubmissionVisitor {
 
     @Override
     public void visit(Submission submission) throws RuntimeException {
-        String salt = UUID.randomUUID().toString()
-                .replaceAll("-", "")
-                .substring(0, 6);
-        String folderName = "sub_" + submission.getSubmission()
-                .replaceAll("[^a-zA-Z0-9]*", "") + "_" + salt;
+        String salt = UUID.randomUUID().toString().replaceAll("-", "").substring(0, 6);
+        String folderName =
+            "sub_" +
+            submission.getSubmission().replaceAll("[^a-zA-Z0-9]*", "") +
+            "_" +
+            salt;
 
         Path oldBasePath = submission.getBasePath();
         Path newBasePath = this.target.resolve(folderName);
@@ -36,6 +35,7 @@ public class CopySubmissionVisitor implements SubmissionVisitor {
     }
 
     private class CannotCopySubmissionException extends RuntimeException {
+
         public CannotCopySubmissionException(Submission submission, Throwable cause) {
             super("Cannot move Submission: ", cause);
         }

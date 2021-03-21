@@ -1,13 +1,12 @@
 package net.ssehub.jacat.worker.analysis.queue;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import net.ssehub.jacat.api.addon.task.Task;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 class AnalysisTaskSchedulerTest {
-
     public static final int QUEUE_CAPACITY = 1;
     public static final String A_FIRST_ID = "A_FIRST_ID";
 
@@ -21,11 +20,14 @@ class AnalysisTaskSchedulerTest {
     @Test
     void trySchedule_withCapacityOne_canOnlyScheduleOneItem() {
         boolean first = analysisTaskScheduler.trySchedule(
-                new Task(A_FIRST_ID, null, null, null, null, null));
+            new Task(A_FIRST_ID, null, null, null, null, null)
+        );
         boolean second = analysisTaskScheduler.trySchedule(
-                new Task("A_SECOND_ID", null, null, null, null, null));
+            new Task("A_SECOND_ID", null, null, null, null, null)
+        );
         boolean third = analysisTaskScheduler.trySchedule(
-                new Task("A_THIRD_ID", null, null, null, null, null));
+            new Task("A_THIRD_ID", null, null, null, null, null)
+        );
 
         assertTrue(first);
         assertFalse(analysisTaskScheduler.canSchedule());
@@ -36,9 +38,11 @@ class AnalysisTaskSchedulerTest {
     @Test
     void trySchedule_withIncompleteTask_shouldReturnFalse() {
         boolean first = analysisTaskScheduler.trySchedule(
-                new Task(A_FIRST_ID, null, null, null, null, null));
+            new Task(A_FIRST_ID, null, null, null, null, null)
+        );
         boolean second = analysisTaskScheduler.trySchedule(
-                new Task(A_FIRST_ID, null, null, null, null, null));
+            new Task(A_FIRST_ID, null, null, null, null, null)
+        );
 
         assertTrue(first);
         assertFalse(second);
@@ -51,9 +55,7 @@ class AnalysisTaskSchedulerTest {
 
     @Test
     void getNext_withOneItem_shouldReturnItem() {
-        Task task = new Task(
-                A_FIRST_ID, null, null,
-                null, null, null);
+        Task task = new Task(A_FIRST_ID, null, null, null, null, null);
         analysisTaskScheduler.trySchedule(task);
 
         assertEquals(task, analysisTaskScheduler.getNext());
@@ -66,9 +68,7 @@ class AnalysisTaskSchedulerTest {
 
     @Test
     void getNext_withOneItemTaken_shouldReturnNull() {
-        Task task = new Task(
-                A_FIRST_ID, null, null,
-                null, null, null);
+        Task task = new Task(A_FIRST_ID, null, null, null, null, null);
         analysisTaskScheduler.trySchedule(task);
 
         analysisTaskScheduler.getNext(); // Take one

@@ -1,24 +1,21 @@
 package net.ssehub.jacat.worker.analysis.queue;
 
+import java.util.Queue;
+import java.util.concurrent.ArrayBlockingQueue;
 import net.ssehub.jacat.api.addon.task.Task;
 import net.ssehub.jacat.api.analysis.IAnalysisScheduler;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Component;
 
-import java.util.Queue;
-import java.util.concurrent.ArrayBlockingQueue;
-
 @Component
 @EnableScheduling
 public class AnalysisTaskScheduler implements IAnalysisScheduler {
-
     public final int queueCapacity;
 
     private Queue<Task> queue;
 
-    public AnalysisTaskScheduler(@Value("${analysis.max-tasks:250}")
-                                         int queueCapacity) {
+    public AnalysisTaskScheduler(@Value("${analysis.max-tasks:250}") int queueCapacity) {
         if (queueCapacity <= 0) { // -1 => unendlich
             queueCapacity = 1000000000; // 1.000.000.000
         }
@@ -50,5 +47,4 @@ public class AnalysisTaskScheduler implements IAnalysisScheduler {
     public boolean canSchedule() {
         return this.queue.size() < queueCapacity;
     }
-
 }

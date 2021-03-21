@@ -1,23 +1,26 @@
 package net.ssehub.jacat.api.addon.data;
 
-
 public class DataSection {
-
     private String protocol;
 
     private String course;
     private String homework;
     private String submission;
 
-    public DataSection() {
-    }
+    public DataSection() {}
 
-    public DataSection(String protocol, String course, String homework, String submission) {
+    public DataSection(
+        String protocol,
+        String course,
+        String homework,
+        String submission
+    ) {
         this.protocol = protocol;
         this.course = course;
         this.homework = homework;
         this.submission = submission;
     }
+
     public String getCourse() {
         return course;
     }
@@ -51,19 +54,31 @@ public class DataSection {
     }
 
     public DataSection clone() {
-        return new DataSection(this.getProtocol(),
-                this.getCourse(),
-                this.getHomework(),
-                this.getSubmission());
+        return new DataSection(
+            this.getProtocol(),
+            this.getCourse(),
+            this.getHomework(),
+            this.getSubmission()
+        );
     }
 
     @Override
     public String toString() {
-        return "DataSection{" +
-                "protocol='" + protocol + '\'' +
-                ", course='" + course + '\'' +
-                ", homework='" + homework + '\'' +
-                ", submission='" + submission + '\'' +
-                '}';
+        return (
+            "DataSection{" +
+            "protocol='" +
+            protocol +
+            '\'' +
+            ", course='" +
+            course +
+            '\'' +
+            ", homework='" +
+            homework +
+            '\'' +
+            ", submission='" +
+            submission +
+            '\'' +
+            '}'
+        );
     }
 }

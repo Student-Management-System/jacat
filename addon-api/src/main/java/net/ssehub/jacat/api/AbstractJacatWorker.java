@@ -1,10 +1,9 @@
 package net.ssehub.jacat.api;
 
+import java.nio.file.Path;
 import net.ssehub.jacat.api.addon.Addon;
 import net.ssehub.jacat.api.addon.data.AbstractDataCollector;
 import net.ssehub.jacat.api.addon.task.AbstractAnalysisCapability;
-
-import java.nio.file.Path;
 
 /**
  * Diese Klasse beschreibt die Möglichkeiten auf einer
@@ -37,10 +36,15 @@ public abstract class AbstractJacatWorker {
      *                           ansteht, wird ein entsprechendes
      *                           Addon dafür benachrichtigt.
      */
-    public abstract void registerAnalysisTask(Addon addon, AbstractAnalysisCapability capability);
+    public abstract void registerAnalysisTask(
+        Addon addon,
+        AbstractAnalysisCapability capability
+    );
 
-    public abstract void registerDataCollector(Addon addon, AbstractDataCollector collector);
+    public abstract void registerDataCollector(
+        Addon addon,
+        AbstractDataCollector collector
+    );
 
     public abstract Path getWorkingDir();
-
 }

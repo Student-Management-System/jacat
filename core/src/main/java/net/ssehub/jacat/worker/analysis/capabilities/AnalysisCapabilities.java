@@ -1,16 +1,14 @@
 package net.ssehub.jacat.worker.analysis.capabilities;
 
+import java.util.HashMap;
+import java.util.Map;
 import net.ssehub.jacat.api.addon.Addon;
 import net.ssehub.jacat.api.addon.task.AbstractAnalysisCapability;
 import net.ssehub.jacat.api.analysis.IAnalysisCapabilities;
 import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
-import java.util.Map;
-
 @Component
 public class AnalysisCapabilities implements IAnalysisCapabilities<Addon> {
-
     private Map<AbstractAnalysisCapability, Addon> capabilities = new HashMap<>();
 
     public void register(Addon addon, AbstractAnalysisCapability analysisCapability) {
@@ -27,11 +25,13 @@ public class AnalysisCapabilities implements IAnalysisCapabilities<Addon> {
 
     public AbstractAnalysisCapability getCapability(String slug, String language) {
         return this.capabilities.keySet()
-                .stream()
-                .filter(capability -> capability.getSlug().equalsIgnoreCase(slug))
-                .filter(capability -> capability.getLanguages().contains(language.toLowerCase()))
-                .findFirst()
-                .orElseThrow(() -> new CapabilityNotFoundException(slug, language));
+            .stream()
+            .filter(capability -> capability.getSlug().equalsIgnoreCase(slug))
+            .filter(
+                capability -> capability.getLanguages().contains(language.toLowerCase())
+            )
+            .findFirst()
+            .orElseThrow(() -> new CapabilityNotFoundException(slug, language));
     }
 
     @Override

@@ -1,5 +1,10 @@
 package net.ssehub.jacat.platform.analysis;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.stream.Collectors;
 import net.ssehub.jacat.api.addon.task.Task;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Example;
@@ -8,31 +13,23 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
-import java.util.stream.Collectors;
-
 @Profile("local")
 @Repository
-public class EmbeddedAnalysisTaskRepository implements AnalysisTaskRepository{
-
+public class EmbeddedAnalysisTaskRepository implements AnalysisTaskRepository {
     private List<AnalysisTask> analysisTasks = new ArrayList<>();
 
     @Override
     public List<AnalysisTask> findAllByStatus(Task.Status status) {
         return this.analysisTasks.stream()
-                .filter(task -> status == task.getStatus())
-                .collect(Collectors.toList());
+            .filter(task -> status == task.getStatus())
+            .collect(Collectors.toList());
     }
 
     @Override
     public <S extends AnalysisTask> S save(S entity) {
         if (entity.getId() == null) {
-            entity.setId(UUID.randomUUID().toString()
-                    .replaceAll("-", "")
-                    .substring(0, 24)
+            entity.setId(
+                UUID.randomUUID().toString().replaceAll("-", "").substring(0, 24)
             );
         }
         System.out.println("entity.getId() = " + entity.getId());
@@ -45,10 +42,12 @@ public class EmbeddedAnalysisTaskRepository implements AnalysisTaskRepository{
     @Override
     public <S extends AnalysisTask> List<S> saveAll(Iterable<S> entities) {
         List<S> toSave = new ArrayList<>();
-        entities.forEach(task -> {
-            task.setId(UUID.randomUUID().toString());
-            toSave.add(task);
-        });
+        entities.forEach(
+            task -> {
+                task.setId(UUID.randomUUID().toString());
+                toSave.add(task);
+            }
+        );
 
         this.analysisTasks.forEach(this::save);
         return toSave;
@@ -57,8 +56,8 @@ public class EmbeddedAnalysisTaskRepository implements AnalysisTaskRepository{
     @Override
     public Optional<AnalysisTask> findById(String s) {
         return this.analysisTasks.stream()
-                .filter(task -> task.getId().equalsIgnoreCase(s))
-                .findFirst();
+            .filter(task -> task.getId().equalsIgnoreCase(s))
+            .findFirst();
     }
 
     @Override
@@ -77,8 +76,8 @@ public class EmbeddedAnalysisTaskRepository implements AnalysisTaskRepository{
         strings.forEach(ids::add);
 
         return this.analysisTasks.stream()
-                .filter(task -> ids.contains(task.getId()))
-                .collect(Collectors.toList());
+            .filter(task -> ids.contains(task.getId()))
+            .collect(Collectors.toList());
     }
 
     @Override
@@ -144,7 +143,10 @@ public class EmbeddedAnalysisTaskRepository implements AnalysisTaskRepository{
     }
 
     @Override
-    public <S extends AnalysisTask> Page<S> findAll(Example<S> example, Pageable pageable) {
+    public <S extends AnalysisTask> Page<S> findAll(
+        Example<S> example,
+        Pageable pageable
+    ) {
         return null;
     }
 

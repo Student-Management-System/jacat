@@ -14,7 +14,6 @@ import java.util.stream.Collectors;
  * Außerdem startet die Plattform mithilfe dieser Klasse eine Analyse.
  */
 public abstract class AbstractAnalysisCapability {
-
     private final String slug;
     private final List<String> languages;
     private final double scheduleFactor;
@@ -32,11 +31,14 @@ public abstract class AbstractAnalysisCapability {
      * @param languages Die Sprachen, welche die Analyse abdecken kann.
      * @param scheduleFactor
      */
-    public AbstractAnalysisCapability(String slug, List<String> languages, double scheduleFactor) {
+    public AbstractAnalysisCapability(
+        String slug,
+        List<String> languages,
+        double scheduleFactor
+    ) {
         this.slug = slug;
-        this.languages = languages.stream()
-                .map(String::toLowerCase)
-                .collect(Collectors.toList());
+        this.languages =
+            languages.stream().map(String::toLowerCase).collect(Collectors.toList());
         this.scheduleFactor = scheduleFactor;
     }
 
@@ -79,5 +81,4 @@ public abstract class AbstractAnalysisCapability {
      *         abhängig von der Implementierung des Analysetask ist.
      */
     public abstract PreparedTask run(PreparedTask task);
-
 }

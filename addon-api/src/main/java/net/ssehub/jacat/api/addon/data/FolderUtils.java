@@ -1,38 +1,50 @@
 package net.ssehub.jacat.api.addon.data;
 
+import static java.nio.file.Files.copy;
+import static java.nio.file.Files.createDirectories;
+
 import java.io.IOException;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 
-import static java.nio.file.Files.copy;
-import static java.nio.file.Files.createDirectories;
-
 public class FolderUtils {
 
-    public static void copyFolder(Path workspace,
-                                  Path source,
-                                  String folderName,
-                                  CopyOption ...options) throws IOException {
-        Files.walkFileTree(source, new SimpleFileVisitor<Path>() {
+    public static void copyFolder(
+        Path workspace,
+        Path source,
+        String folderName,
+        CopyOption... options
+    )
+        throws IOException {
+        Files.walkFileTree(
+            source,
+            new SimpleFileVisitor<Path>() {
 
-            @Override
-            public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs)
+                @Override
+                public FileVisitResult preVisitDirectory(
+                    Path dir,
+                    BasicFileAttributes attrs
+                )
                     throws IOException {
-                Path directory = getWorkspace(workspace, folderName)
+                    Path directory = getWorkspace(workspace, folderName)
                         .resolve(source.relativize(dir));
-                createDirectories(directory);
-                return FileVisitResult.CONTINUE;
-            }
+                    createDirectories(directory);
+                    return FileVisitResult.CONTINUE;
+                }
 
-            @Override
-            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs)
+                @Override
+                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs)
                     throws IOException {
-                Path relativizedFile = source.relativize(file);
-                copy(file, getWorkspace(workspace, folderName)
-                        .resolve(relativizedFile), options);
-                return FileVisitResult.CONTINUE;
+                    Path relativizedFile = source.relativize(file);
+                    copy(
+                        file,
+                        getWorkspace(workspace, folderName).resolve(relativizedFile),
+                        options
+                    );
+                    return FileVisitResult.CONTINUE;
+                }
             }
-        });
+        );
     }
 
     private static Path getWorkspace(Path workspace, String folderName) {
@@ -42,5 +54,4 @@ public class FolderUtils {
         }
         return directory;
     }
-
 }

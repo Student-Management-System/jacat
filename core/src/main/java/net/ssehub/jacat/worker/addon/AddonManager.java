@@ -1,14 +1,12 @@
 package net.ssehub.jacat.worker.addon;
 
+import java.util.ArrayList;
+import java.util.List;
 import net.ssehub.jacat.api.addon.Addon;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Component
 public class AddonManager {
-
     private List<Addon> addons;
 
     public AddonManager() {
@@ -29,8 +27,6 @@ public class AddonManager {
 
     @Override
     public String toString() {
-        return "AddonManager{" +
-                "addons=" + addons +
-                '}';
+        return "AddonManager{" + "addons=" + addons + '}';
     }
 }

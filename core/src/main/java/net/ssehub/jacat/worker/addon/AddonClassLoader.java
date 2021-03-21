@@ -1,17 +1,16 @@
 package net.ssehub.jacat.worker.addon;
 
-import net.ssehub.jacat.api.addon.Addon;
-import net.ssehub.jacat.api.addon.AddonDescription;
-import net.ssehub.jacat.worker.JacatWorker;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import net.ssehub.jacat.api.addon.Addon;
+import net.ssehub.jacat.api.addon.AddonDescription;
+import net.ssehub.jacat.worker.JacatWorker;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class AddonClassLoader extends URLClassLoader {
     public static final String WORKER_FIELD_NAME = "worker";
@@ -23,14 +22,28 @@ public class AddonClassLoader extends URLClassLoader {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    public AddonClassLoader(final File addonJarFile, AddonDescription addonDescription, JacatWorker jacatWorker) throws MalformedURLException {
-        super(new URL[] {addonJarFile.toURI().toURL()}, AddonClassLoader.class.getClassLoader());
+    public AddonClassLoader(
+        final File addonJarFile,
+        AddonDescription addonDescription,
+        JacatWorker jacatWorker
+    )
+        throws MalformedURLException {
+        super(
+            new URL[] { addonJarFile.toURI().toURL() },
+            AddonClassLoader.class.getClassLoader()
+        );
         this.addonJarFile = addonJarFile;
 
         try {
             String loggerName = "A:[" + addonDescription.getName() + "]";
-            logger.info("Going to load: " + loggerName + " - " + addonJarFile.getAbsolutePath());
-            Class<?> jarClass = Class.forName(addonDescription.getMainClass(), true, this);
+            logger.info(
+                "Going to load: " + loggerName + " - " + addonJarFile.getAbsolutePath()
+            );
+            Class<?> jarClass = Class.forName(
+                addonDescription.getMainClass(),
+                true,
+                this
+            );
             Object addon = jarClass.getDeclaredConstructor().newInstance();
 
             setCustomValue(addon, WORKER_FIELD_NAME, jacatWorker);
@@ -46,12 +59,14 @@ public class AddonClassLoader extends URLClassLoader {
             this.addon = (Addon) addon;
 
             logger.info("A:[" + addonDescription.getName() + "] successfully loaded.");
-        } catch (InstantiationException
-                | InvocationTargetException
-                | IllegalAccessException
-                | ClassNotFoundException
-                | NoSuchMethodException
-                | NoSuchFieldException e) {
+        } catch (
+            InstantiationException
+            | InvocationTargetException
+            | IllegalAccessException
+            | ClassNotFoundException
+            | NoSuchMethodException
+            | NoSuchFieldException e
+        ) {
             e.printStackTrace();
             throw new AddonNotLoadableException(e);
         }
@@ -61,7 +76,8 @@ public class AddonClassLoader extends URLClassLoader {
         return this.addon;
     }
 
-    private void setCustomValue(Object addon, String declaredField, Object value) throws NoSuchFieldException, IllegalAccessException {
+    private void setCustomValue(Object addon, String declaredField, Object value)
+        throws NoSuchFieldException, IllegalAccessException {
         Field platform = addon.getClass().getSuperclass().getDeclaredField(declaredField);
         platform.setAccessible(true);
         platform.set(addon, value);

@@ -1,5 +1,11 @@
 package net.ssehub.jacat.worker;
 
+import java.io.File;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import net.ssehub.jacat.api.AbstractJacatWorker;
 import net.ssehub.jacat.api.addon.Addon;
@@ -11,24 +17,18 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Optional;
-
 @Service
 @Slf4j
 public class JacatWorker extends AbstractJacatWorker {
-
     private IAnalysisCapabilities<Addon> analysisCapabilities;
     private DataCollectors dataCollectors;
     private Path workdir;
 
-    public JacatWorker(@Qualifier("workdir") Path workdir,
-                       IAnalysisCapabilities<Addon> analysisCapabilities,
-                       DataCollectors dataCollectors) {
+    public JacatWorker(
+        @Qualifier("workdir") Path workdir,
+        IAnalysisCapabilities<Addon> analysisCapabilities,
+        DataCollectors dataCollectors
+    ) {
         this.workdir = workdir;
         this.analysisCapabilities = analysisCapabilities;
         this.dataCollectors = dataCollectors;
@@ -42,7 +42,10 @@ public class JacatWorker extends AbstractJacatWorker {
     public void registerAnalysisTask(Addon addon, AbstractAnalysisCapability capability) {
         for (String language : capability.getLanguages()) {
             if (this.analysisCapabilities.isRegistered(capability.getSlug(), language)) {
-                throw new AnalysisCapabilityAlreadyRegisteredException(capability.getSlug(), language);
+                throw new AnalysisCapabilityAlreadyRegisteredException(
+                    capability.getSlug(),
+                    language
+                );
             }
         }
 
@@ -63,18 +66,32 @@ public class JacatWorker extends AbstractJacatWorker {
         return this.workdir;
     }
 
-    private static class AnalysisCapabilityAlreadyRegisteredException extends RuntimeException {
-        public AnalysisCapabilityAlreadyRegisteredException(String slug, String language) {
-            super("The desired capability (slug=\"" +
-                    slug + "\", language=\"" + language +
-                    "\") is already registered.");
+    private static class AnalysisCapabilityAlreadyRegisteredException
+        extends RuntimeException {
+
+        public AnalysisCapabilityAlreadyRegisteredException(
+            String slug,
+            String language
+        ) {
+            super(
+                "The desired capability (slug=\"" +
+                slug +
+                "\", language=\"" +
+                language +
+                "\") is already registered."
+            );
         }
     }
 
-    private static class DataCollectorAlreadyRegisteredException extends RuntimeException {
+    private static class DataCollectorAlreadyRegisteredException
+        extends RuntimeException {
+
         public DataCollectorAlreadyRegisteredException(String protocol) {
-            super("The desired data collector (protocol=\"" + protocol + "\") is already registered.");
+            super(
+                "The desired data collector (protocol=\"" +
+                protocol +
+                "\") is already registered."
+            );
         }
     }
-
 }

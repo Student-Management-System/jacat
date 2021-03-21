@@ -8,12 +8,11 @@ import java.util.Map;
 import java.util.Objects;
 
 public class PreparedTask {
+    private final String id;
 
-    private String id;
+    private final String slug;
 
-    private String slug;
-
-    private String language;
+    private final String language;
 
     private Task.Status status;
 
@@ -21,16 +20,18 @@ public class PreparedTask {
 
     private SubmissionCollection submissions;
 
-    private Map<String, Object> request;
+    private final Map<String, Object> request;
 
     private Map<String, Object> result;
 
-    public PreparedTask(Task task) {
+    public PreparedTask(Task task, Path workspace, SubmissionCollection submissions) {
         this.id = task.getId();
         this.slug = task.getSlug();
         this.language = task.getLanguage();
         this.status = task.getStatus();
         this.request = task.getRequest();
+        this.workspace = workspace;
+        this.submissions = submissions;
     }
 
     public void setSubmissions(SubmissionCollection submissions) {
@@ -74,8 +75,12 @@ public class PreparedTask {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         PreparedTask task = (PreparedTask) o;
         return id.equals(task.id);
     }

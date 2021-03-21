@@ -1,19 +1,19 @@
 package net.ssehub.jacat.api.addon.data;
 
-import java.util.Date;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
 public class DataRequest {
-
-    private Pattern homework;
-    private Pattern submission;
-    private UUID uuid;
+    private final Pattern homework;
+    private final Pattern submission;
+    private final UUID uuid;
 
     public DataRequest(String homework, String submission) {
-        this.homework = homework != null ? Pattern.compile(homework) : Pattern.compile(".*");
-        this.submission = submission != null ? Pattern.compile(submission) : Pattern.compile(".*");
+        this.homework =
+            homework != null ? Pattern.compile(homework) : Pattern.compile(".*");
+        this.submission =
+            submission != null ? Pattern.compile(submission) : Pattern.compile(".*");
         this.uuid = UUID.randomUUID();
     }
 
@@ -42,7 +42,11 @@ public class DataRequest {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         DataRequest that = (DataRequest) o;
-        return homework.equals(that.homework) && submission.equals(that.submission) && uuid.equals(that.uuid);
+        return (
+            homework.equals(that.homework) &&
+            submission.equals(that.submission) &&
+            uuid.equals(that.uuid)
+        );
     }
 
     @Override

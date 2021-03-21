@@ -3,8 +3,7 @@ package net.ssehub.jacat.api.addon.data;
 import java.util.*;
 
 public class SubmissionCollection implements Iterable<Submission> {
-
-    private List<Submission> submissions;
+    private final List<Submission> submissions;
 
     public SubmissionCollection() {
         this.submissions = new ArrayList<>();
@@ -19,11 +18,16 @@ public class SubmissionCollection implements Iterable<Submission> {
     }
 
     public Optional<Submission> getSubmission(String folderName) {
-        return submissions.stream()
-            .filter(submission ->
-                    submission.getBasePath()
-                        .getFileName().toString()
-                        .equalsIgnoreCase(folderName))
+        return submissions
+            .stream()
+            .filter(
+                submission ->
+                    submission
+                        .getBasePath()
+                        .getFileName()
+                        .toString()
+                        .equalsIgnoreCase(folderName)
+            )
             .findFirst();
     }
 
@@ -33,7 +37,7 @@ public class SubmissionCollection implements Iterable<Submission> {
     }
 
     public void accept(SubmissionVisitor visitor) {
-        for(Submission submission : this.submissions) {
+        for (Submission submission : this.submissions) {
             try {
                 submission.accept(visitor);
             } catch (RuntimeException e) {

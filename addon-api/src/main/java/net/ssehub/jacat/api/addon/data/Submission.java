@@ -4,10 +4,9 @@ import java.nio.file.Path;
 import java.util.Objects;
 
 public class Submission {
-
-    private String course;
-    private String homework;
-    private String submission;
+    private final String course;
+    private final String homework;
+    private final String submission;
     private Path basePath;
 
     public Submission(String course, String homework, String submission, Path basePath) {
@@ -42,20 +41,31 @@ public class Submission {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Submission that = (Submission) o;
-        return Objects.equals(course, that.course)
-                && Objects.equals(homework, that.homework)
-                && Objects.equals(submission, that.submission)
-                && Objects.equals(basePath, that.basePath);
+        return (
+            Objects.equals(course, that.course) &&
+            Objects.equals(homework, that.homework) &&
+            Objects.equals(submission, that.submission) &&
+            Objects.equals(basePath, that.basePath)
+        );
     }
 
     @Override
     public String toString() {
-        return "Submission{" +
-                "course='" + course + '\'' +
-                ", homework='" + homework + '\'' +
-                ", submission='" + submission + '\'' +
-                ", basePath=" + basePath +
-                '}';
+        return (
+            "Submission{" +
+            "course='" +
+            course +
+            '\'' +
+            ", homework='" +
+            homework +
+            '\'' +
+            ", submission='" +
+            submission +
+            '\'' +
+            ", basePath=" +
+            basePath +
+            '}'
+        );
     }
 
     @Override
@@ -63,7 +73,7 @@ public class Submission {
         return Objects.hash(course, homework, basePath, submission);
     }
 
-    public void accept(SubmissionVisitor visitor){
+    public void accept(SubmissionVisitor visitor) {
         visitor.visit(this);
     }
 }
