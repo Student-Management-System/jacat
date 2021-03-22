@@ -2,7 +2,6 @@ package net.ssehub.jacat.platform.analysis;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import java.util.Map;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -11,12 +10,14 @@ import net.ssehub.jacat.api.addon.task.Task;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.Map;
+
 @Document
 @NoArgsConstructor
 @Data
 @EqualsAndHashCode(callSuper = true)
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-@JsonIgnoreProperties({ "language", "dataConfiguration" })
+@JsonIgnoreProperties({"language", "dataConfiguration"})
 public class AnalysisTask extends Task {
 
     public AnalysisTask(Task task) {
@@ -37,7 +38,7 @@ public class AnalysisTask extends Task {
         DataSection data,
         Map<String, Object> request
     ) {
-        super(null, slug, language, data, request, null);
+        super(null, slug, language, data, request);
     }
 
     @Override

@@ -5,5 +5,5 @@ import net.ssehub.jacat.api.addon.task.Task;
 public interface IAnalysisTaskExecutor {
     boolean isRunning(Task task);
 
-    void executeTasks();
+    void process(Task task, TaskCompletion completion);
 }

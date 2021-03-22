@@ -1,8 +1,9 @@
 package net.ssehub.jacat.api.addon.task;
 
+import net.ssehub.jacat.api.addon.data.DataSection;
+
 import java.util.Map;
 import java.util.Objects;
-import net.ssehub.jacat.api.addon.data.DataSection;
 
 public class Task {
     private String id;
@@ -13,30 +14,27 @@ public class Task {
 
     private Status status;
 
-    private TaskFinish finish;
-
     private DataSection dataConfiguration;
 
     private Map<String, Object> request;
 
     private Map<String, Object> result;
 
-    public Task() {}
+    public Task() {
+    }
 
     public Task(
         String id,
         String slug,
         String language,
         DataSection dataSection,
-        Map<String, Object> request,
-        TaskFinish finish
+        Map<String, Object> request
     ) {
         this.id = id;
         this.slug = slug;
         this.language = language;
         this.dataConfiguration = dataSection;
         this.request = request;
-        this.finish = finish;
     }
 
     public Task(
@@ -94,12 +92,6 @@ public class Task {
         return result;
     }
 
-    public void finish() {
-        if (this.finish != null) {
-            this.finish.finish(this);
-        }
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -121,25 +113,23 @@ public class Task {
     public String toString() {
         return (
             "Task{id='" +
-            id +
-            '\'' +
-            ", slug='" +
-            slug +
-            '\'' +
-            ", language='" +
-            language +
-            '\'' +
-            ", status=" +
-            status +
-            ", finish=" +
-            finish +
-            ", dataConfiguration=" +
-            dataConfiguration +
-            ", request=" +
-            request +
-            ", result=" +
-            result +
-            '}'
+                id +
+                '\'' +
+                ", slug='" +
+                slug +
+                '\'' +
+                ", language='" +
+                language +
+                '\'' +
+                ", status=" +
+                status +
+                ", dataConfiguration=" +
+                dataConfiguration +
+                ", request=" +
+                request +
+                ", result=" +
+                result +
+                '}'
         );
     }
 

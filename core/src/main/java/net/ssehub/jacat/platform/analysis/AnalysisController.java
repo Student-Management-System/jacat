@@ -1,12 +1,11 @@
 package net.ssehub.jacat.platform.analysis;
 
-import java.util.Optional;
 import net.ssehub.jacat.platform.analysis.api.CreateAnalysisDto;
 import net.ssehub.jacat.platform.analysis.api.ListAnalysisResultDto;
 import net.ssehub.jacat.platform.course.CoursesConfiguration;
-import net.ssehub.jacat.platform.error.ApplicationRuntimeException;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v0/analysis")
@@ -34,17 +33,14 @@ public class AnalysisController {
     }
 
     @PostMapping
-    public ListAnalysisResultDto startAnalysis(
-        @RequestParam("slug") String slug,
-        @RequestBody CreateAnalysisDto createAnalysisDto
-    ) {
+    public ListAnalysisResultDto startAnalysis(@RequestParam("slug") String slug,
+                                               @RequestBody CreateAnalysisDto createAnalysisDto) {
         if (createAnalysisDto.getData() == null) {
             throw new CourseConfigurationNotFoundException();
         }
 
-        Optional<CoursesConfiguration.Course> courseConfiguration = coursesConfiguration.getCourse(
-            createAnalysisDto.getData().getCourse()
-        );
+        Optional<CoursesConfiguration.Course> courseConfiguration =
+            coursesConfiguration.getCourse(createAnalysisDto.getData().getCourse());
 
         courseConfiguration.orElseThrow(CourseConfigurationNotFoundException::new);
 
@@ -53,11 +49,9 @@ public class AnalysisController {
         createAnalysisDto.getData().setProtocol(foundCourseConfiguration.getProtocol());
 
         AnalysisTask analysisTask =
-            this.analysisService.trySchedule(
-                    slug,
-                    foundCourseConfiguration.getLanguage(),
-                    createAnalysisDto
-                );
+            this.analysisService.tryProcess(slug,
+                foundCourseConfiguration.getLanguage(),
+                createAnalysisDto);
 
         return new ListAnalysisResultDto(analysisTask);
     }

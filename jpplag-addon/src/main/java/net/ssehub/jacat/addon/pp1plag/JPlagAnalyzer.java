@@ -12,19 +12,18 @@ import java.nio.file.Path;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 public class JPlagAnalyzer extends AbstractAnalysisCapability {
 
     public static final String REGEX =
-            "Comparing ([0-9_a-zA-Z]+)-([0-9_a-zA-Z]+): ([0-9]+\\.?[0-9]*)";
+        "Comparing ([0-9_a-zA-Z]+)-([0-9_a-zA-Z]+): ([0-9]+\\.?[0-9]*)";
     public static final String JPLAG_JAR =
-            ".\\debug\\addons\\pp1plag\\jplag-2.12.1.jar";
+        ".\\debug\\addons\\pp1plag\\jplag-2.12.1.jar";
 
     public JPlagAnalyzer() {
         super("pp1plag",
-                Collections.singletonList("java"),
-                1.0);
+            Collections.singletonList("java"),
+            1.0);
     }
 
     @Override
@@ -43,33 +42,24 @@ public class JPlagAnalyzer extends AbstractAnalysisCapability {
 
             ProcessBuilder processBuilder = new ProcessBuilder().directory(workspace.toFile());
             processBuilder.command(
-                    "java",
-                    "-jar",
-                    jplag.getCanonicalPath(),
-                    "-l", "java19",
-                    "-s",
-                    workspace.toFile().getCanonicalPath());
-            System.out.println(String.join(" ", processBuilder.command()));
+                "java",
+                "-jar",
+                jplag.getCanonicalPath(),
+                "-l", "java19",
+                "-s",
+                workspace.toFile().getCanonicalPath());
             processBuilder.redirectErrorStream(true);
             Process p = processBuilder.start();
-
-            try(BufferedReader input = new BufferedReader(new InputStreamReader(p.getErrorStream()))) {
-                String line;
-
-                while ((line = input.readLine()) != null) {
-                    System.err.println(line);
-                }
-            }
 
             List<Result> similarities = new ArrayList<>();
             Pattern pattern = Pattern.compile(REGEX);
 
-            try(BufferedReader input = new BufferedReader(new InputStreamReader(p.getInputStream()))) {
+            try (BufferedReader input = new BufferedReader(new InputStreamReader(p.getInputStream()))) {
                 String line;
 
                 while ((line = input.readLine()) != null) {
                     Matcher matcher = pattern.matcher(line);
-                    System.out.println(line);
+//                    System.out.println(line);
                     if (matcher.matches()) {
                         Submission from = submissions.getSubmission(matcher.group(1)).get();
                         Submission to = submissions.getSubmission(matcher.group(2)).get();
@@ -82,7 +72,7 @@ public class JPlagAnalyzer extends AbstractAnalysisCapability {
                             }
 
                             similarities.get(similarities.indexOf(result))
-                                    .add(to.getSubmission(), sim);
+                                .add(to.getSubmission(), sim);
                         }
                     }
                 }

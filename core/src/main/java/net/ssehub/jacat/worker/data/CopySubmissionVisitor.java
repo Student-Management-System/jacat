@@ -24,9 +24,8 @@ public class CopySubmissionVisitor implements SubmissionVisitor {
                 "_" +
                 salt;
 
-        Path oldBasePath = submission.getBasePath();
+        Path oldBasePath = submission.getBasePath().toAbsolutePath();
         Path newBasePath = this.target.resolve(folderName);
-
         try {
             FolderUtils.copyFolder(oldBasePath, target, folderName);
             submission.setBasePath(newBasePath);

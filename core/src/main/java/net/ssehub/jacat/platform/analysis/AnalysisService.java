@@ -3,28 +3,28 @@ package net.ssehub.jacat.platform.analysis;
 import net.ssehub.jacat.api.addon.Addon;
 import net.ssehub.jacat.api.addon.task.Task;
 import net.ssehub.jacat.api.analysis.IAnalysisCapabilities;
+import net.ssehub.jacat.api.analysis.IAnalysisTaskExecutor;
 import net.ssehub.jacat.platform.analysis.api.CreateAnalysisDto;
-import net.ssehub.jacat.platform.course.CoursesConfiguration;
-import net.ssehub.jacat.worker.analysis.queue.AnalysisTaskScheduler;
 import org.springframework.stereotype.Service;
+
+import java.util.concurrent.RejectedExecutionException;
 
 @Service
 public class AnalysisService {
     private final IAnalysisCapabilities<Addon> capabilities;
-    private final AnalysisTaskScheduler analysisTaskScheduler;
     private final AnalysisTaskRepository repository;
+    private final IAnalysisTaskExecutor taskExecutor;
 
     public AnalysisService(
         IAnalysisCapabilities<Addon> capabilities,
-        AnalysisTaskScheduler analysisTaskScheduler,
-        AnalysisTaskRepository repository
-    ) {
+        AnalysisTaskRepository repository,
+        IAnalysisTaskExecutor taskExecutor) {
         this.capabilities = capabilities;
-        this.analysisTaskScheduler = analysisTaskScheduler;
         this.repository = repository;
+        this.taskExecutor = taskExecutor;
     }
 
-    public AnalysisTask trySchedule(
+    public AnalysisTask tryProcess(
         String slug,
         String language,
         CreateAnalysisDto request
@@ -33,34 +33,34 @@ public class AnalysisService {
             throw new CapabilityNotAvailableException(slug, language);
         }
 
-        if (!analysisTaskScheduler.canSchedule()) {
-            throw new QueueCapacityLimitReachedException();
-        }
-
         AnalysisTask analysisTask = new AnalysisTask(
             slug,
             language,
             request.getData(),
             request.getRequest()
         );
+
         analysisTask = this.repository.save(analysisTask);
-        this.schedule(analysisTask);
+        this.process(analysisTask);
 
         return analysisTask;
     }
 
-    public void schedule(Task analysisTask) {
+    public void process(Task analysisTask) {
         Task task = new Task(
             analysisTask.getId(),
             analysisTask.getSlug(),
             analysisTask.getLanguage(),
             analysisTask.getDataConfiguration(),
-            analysisTask.getRequest(),
-            finishedTask -> {
-                this.repository.save(new AnalysisTask(finishedTask));
-            }
+            analysisTask.getRequest()
         );
 
-        analysisTaskScheduler.trySchedule(task);
+        try {
+            this.taskExecutor.process(task,
+                (finishedTask) -> this.repository.save(new AnalysisTask(finishedTask)));
+        } catch (RejectedExecutionException ex) {
+
+        }
+
     }
 }
