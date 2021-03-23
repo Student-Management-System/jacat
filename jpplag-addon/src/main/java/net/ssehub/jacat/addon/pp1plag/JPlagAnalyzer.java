@@ -6,7 +6,6 @@ import net.ssehub.jacat.api.addon.task.AbstractAnalysisCapability;
 import net.ssehub.jacat.api.addon.task.PreparedTask;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.InputStreamReader;
 import java.nio.file.Path;
 import java.util.*;
@@ -17,13 +16,15 @@ public class JPlagAnalyzer extends AbstractAnalysisCapability {
 
     public static final String REGEX =
         "Comparing ([0-9_a-zA-Z]+)-([0-9_a-zA-Z]+): ([0-9]+\\.?[0-9]*)";
-    public static final String JPLAG_JAR =
-        ".\\addons\\pp1plag\\jplag-2.12.1.jar";
+    public static final Path JPLAG_JAR = Path.of("addons", "pp1plag", "jplag-2.12.1.jar");
 
-    public JPlagAnalyzer() {
+    private Path workdir;
+
+    public JPlagAnalyzer(Path workdir) {
         super("pp1plag",
             Collections.singletonList("java"),
             1.0);
+        this.workdir = workdir;
     }
 
     @Override
@@ -38,13 +39,13 @@ public class JPlagAnalyzer extends AbstractAnalysisCapability {
         }
 
         try {
-            File jplag = new File(JPLAG_JAR);
+            Path jplag = this.workdir.resolve(JPLAG_JAR);
 
             ProcessBuilder processBuilder = new ProcessBuilder().directory(workspace.toFile());
             processBuilder.command(
                 "java",
                 "-jar",
-                "\""+jplag.getCanonicalPath()+"\"",
+                "\"" + jplag.toAbsolutePath() + "\"",
                 "-l", "java19",
                 "-s",
                 workspace.toFile().getCanonicalPath());
