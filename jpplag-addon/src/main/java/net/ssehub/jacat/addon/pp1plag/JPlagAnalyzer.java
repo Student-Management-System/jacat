@@ -18,7 +18,7 @@ public class JPlagAnalyzer extends AbstractAnalysisCapability {
     public static final String REGEX =
         "Comparing ([0-9_a-zA-Z]+)-([0-9_a-zA-Z]+): ([0-9]+\\.?[0-9]*)";
     public static final String JPLAG_JAR =
-        ".\\debug\\addons\\pp1plag\\jplag-2.12.1.jar";
+        ".\\addons\\pp1plag\\jplag-2.12.1.jar";
 
     public JPlagAnalyzer() {
         super("pp1plag",
@@ -44,7 +44,7 @@ public class JPlagAnalyzer extends AbstractAnalysisCapability {
             processBuilder.command(
                 "java",
                 "-jar",
-                jplag.getCanonicalPath(),
+                "\""+jplag.getCanonicalPath()+"\"",
                 "-l", "java19",
                 "-s",
                 workspace.toFile().getCanonicalPath());

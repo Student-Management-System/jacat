@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-./mvnw clean package
+mvn clean package
 
 mkdir -p debug/addons/pp1plag
 mkdir -p debug/workspace
