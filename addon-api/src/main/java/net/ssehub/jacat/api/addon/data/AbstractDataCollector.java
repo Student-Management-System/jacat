@@ -40,7 +40,7 @@ public abstract class AbstractDataCollector {
      *
      * @return the underlying protocol
      */
-    public String getProtocol() {
+    public final String getProtocol() {
         return protocol;
     }
 
@@ -48,7 +48,7 @@ public abstract class AbstractDataCollector {
      * This method represents the core of a DataCollector.
      * It must be implemented so that the DataCollector can
      * index the data correctly. As parameter you get a
-     * {@link DataRequest} passed, so that you can filter
+     * {@link DataProcessingRequest} passed, so that you can filter
      * and index the data accordingly.
      *
      * @param request The DataRequest-Information, which
@@ -58,7 +58,7 @@ public abstract class AbstractDataCollector {
      * @return a {@link SubmissionCollection} containing all
      * collected {@link Submission}s.
      */
-    public abstract SubmissionCollection collect(DataRequest request);
+    public abstract SubmissionCollection collect(DataProcessingRequest request);
 
     /**
      * After successful processing of the data, the original
@@ -71,5 +71,5 @@ public abstract class AbstractDataCollector {
      *                homework and submissions the datacollector
      *                should cleanup.
      */
-    public abstract void cleanup(DataRequest request);
+    public abstract void cleanup(DataProcessingRequest request);
 }

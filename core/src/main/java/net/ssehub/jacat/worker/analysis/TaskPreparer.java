@@ -1,7 +1,10 @@
 package net.ssehub.jacat.worker.analysis;
 
 import lombok.extern.slf4j.Slf4j;
-import net.ssehub.jacat.api.addon.data.*;
+import net.ssehub.jacat.api.addon.data.AbstractDataCollector;
+import net.ssehub.jacat.api.addon.data.DataProcessingRequest;
+import net.ssehub.jacat.api.addon.data.ResourceNotAvailableException;
+import net.ssehub.jacat.api.addon.data.SubmissionCollection;
 import net.ssehub.jacat.api.addon.task.PreparedTask;
 import net.ssehub.jacat.api.addon.task.Task;
 import net.ssehub.jacat.worker.data.CopySubmissionVisitor;
@@ -26,18 +29,17 @@ public class TaskPreparer {
     }
 
     public PreparedTask prepare(Task task) {
-        DataSection data = task.getDataConfiguration();
-        DataRequest dataRequest = new DataRequest(data.getHomework(), data.getSubmission());
+        DataProcessingRequest dataProcessingRequest = task.getDataProcessingRequest();
 
         AbstractDataCollector collector =
-            this.dataCollectors.getCollector(data.getProtocol());
+            this.dataCollectors.getCollector(dataProcessingRequest.getDataCollector());
 
         log.debug("Creating Workspace (#" + task.getId() + ")");
         Path workspace = createWorkspace(task);
-        SubmissionCollection collection;
+        SubmissionCollection collection = null;
         try {
             log.debug("Collecting started (#" + task.getId() + ")");
-            collection = collector.collect(dataRequest);
+            collection = collector.collect(dataProcessingRequest);
             log.debug("Collecting ended (#" + task.getId() + ")");
             log.debug("Moving started (#" + task.getId() + ")");
             collection.accept(new CopySubmissionVisitor(workspace));
@@ -46,7 +48,9 @@ public class TaskPreparer {
             throw new ResourceNotAvailableException(e);
         } finally {
             log.debug("Cleanup Temp started (#" + task.getId() + ")");
-            collector.cleanup(dataRequest);
+            if (collection != null) {
+                collector.cleanup(dataProcessingRequest);
+            }
             log.debug("Cleanup Temp ended (#" + task.getId() + ")");
         }
 

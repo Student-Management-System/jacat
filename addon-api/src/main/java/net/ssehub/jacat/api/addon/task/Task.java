@@ -1,6 +1,6 @@
 package net.ssehub.jacat.api.addon.task;
 
-import net.ssehub.jacat.api.addon.data.DataSection;
+import net.ssehub.jacat.api.addon.data.DataProcessingRequest;
 
 import java.util.Map;
 import java.util.Objects;
@@ -8,13 +8,9 @@ import java.util.Objects;
 public class Task {
     private String id;
 
-    private String slug;
-
-    private String language;
-
     private Status status;
 
-    private DataSection dataConfiguration;
+    private DataProcessingRequest dataProcessingRequest;
 
     private Map<String, Object> request;
 
@@ -25,34 +21,36 @@ public class Task {
 
     public Task(
         String id,
-        String slug,
-        String language,
-        DataSection dataSection,
+        Status status,
+        DataProcessingRequest collectRequest,
         Map<String, Object> request
     ) {
         this.id = id;
-        this.slug = slug;
-        this.language = language;
-        this.dataConfiguration = dataSection;
+        this.status = status;
+        this.dataProcessingRequest = collectRequest;
         this.request = request;
     }
 
     public Task(
         String id,
-        String slug,
-        String language,
         Status status,
-        DataSection dataSection,
+        DataProcessingRequest collectRequest,
         Map<String, Object> request,
         Map<String, Object> result
     ) {
         this.id = id;
-        this.slug = slug;
-        this.language = language;
         this.status = status;
-        this.dataConfiguration = dataSection;
+        this.dataProcessingRequest = collectRequest;
         this.request = request;
         this.result = result;
+    }
+    
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
     }
 
     public void setResult(Status status, Map<String, Object> result) {
@@ -64,14 +62,6 @@ public class Task {
         return request;
     }
 
-    public String getSlug() {
-        return slug;
-    }
-
-    public String getLanguage() {
-        return language;
-    }
-
     public String getId() {
         return id;
     }
@@ -80,16 +70,23 @@ public class Task {
         this.id = id;
     }
 
-    public DataSection getDataConfiguration() {
-        return this.dataConfiguration;
-    }
-
-    public Status getStatus() {
-        return status;
+    public DataProcessingRequest getDataProcessingRequest() {
+        return this.dataProcessingRequest;
     }
 
     public Map<String, Object> getResult() {
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "Task{" +
+            "id='" + id + '\'' +
+            ", status=" + status +
+            ", dataProcessingRequest=" + dataProcessingRequest +
+            ", request=" + request +
+            ", result=" + result +
+            '}';
     }
 
     @Override
@@ -107,30 +104,6 @@ public class Task {
     @Override
     public int hashCode() {
         return Objects.hash(id);
-    }
-
-    @Override
-    public String toString() {
-        return (
-            "Task{id='" +
-                id +
-                '\'' +
-                ", slug='" +
-                slug +
-                '\'' +
-                ", language='" +
-                language +
-                '\'' +
-                ", status=" +
-                status +
-                ", dataConfiguration=" +
-                dataConfiguration +
-                ", request=" +
-                request +
-                ", result=" +
-                result +
-                '}'
-        );
     }
 
     public enum Status {

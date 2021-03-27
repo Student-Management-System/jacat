@@ -1,4 +1,4 @@
-package net.ssehub.jacat.worker.analysis.queue;
+package net.ssehub.jacat.worker.analysis;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.AsyncConfigurer;
@@ -9,7 +9,7 @@ import java.util.concurrent.Executor;
 
 @Configuration
 @EnableAsync
-public class SpringAsyncConfiguration implements AsyncConfigurer {
+public class AsyncConfiguration implements AsyncConfigurer {
 
     @Override
     public Executor getAsyncExecutor() {

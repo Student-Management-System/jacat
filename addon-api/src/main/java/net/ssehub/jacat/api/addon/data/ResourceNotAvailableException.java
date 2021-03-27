@@ -9,7 +9,7 @@ public class ResourceNotAvailableException extends RuntimeException {
      * Default constructor. Sets the message of the exception.
      */
     public ResourceNotAvailableException() {
-        super("Resource is not available.");
+        super("Cannot gather required resources to perform an analysis.");
     }
 
     /**
@@ -18,6 +18,6 @@ public class ResourceNotAvailableException extends RuntimeException {
      * @param cause the cause.
      */
     public ResourceNotAvailableException(Throwable cause) {
-        super("Resource is not available.", cause);
+        super("Cannot gather required resources to perform an analysis", cause);
     }
 }

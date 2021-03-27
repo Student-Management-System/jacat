@@ -1,8 +1,9 @@
 package net.ssehub.jacat.addon.pp1plag;
 
+import net.ssehub.jacat.api.addon.analysis.AbstractAnalysisCapability;
 import net.ssehub.jacat.api.addon.data.Submission;
 import net.ssehub.jacat.api.addon.data.SubmissionCollection;
-import net.ssehub.jacat.api.addon.task.AbstractAnalysisCapability;
+import net.ssehub.jacat.api.addon.task.FinishedTask;
 import net.ssehub.jacat.api.addon.task.PreparedTask;
 
 import java.io.BufferedReader;
@@ -28,7 +29,7 @@ public class JPlagAnalyzer extends AbstractAnalysisCapability {
     }
 
     @Override
-    public PreparedTask run(PreparedTask task) {
+    public FinishedTask run(PreparedTask task) {
         Path workspace = task.getWorkspace();
         SubmissionCollection submissions = task.getSubmissions();
         Map<String, Object> request = task.getRequest();
@@ -81,12 +82,10 @@ public class JPlagAnalyzer extends AbstractAnalysisCapability {
             Map<String, Object> result = new HashMap<>();
             result.put("similarities", similarities);
 
-            task.setSuccessfulResult(result);
-
-        } catch (Exception err) {
-            task.setFailedResult(Collections.singletonMap("error", err.getMessage()));
-            err.printStackTrace();
+            return task.success(result);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return task.fail(ex);
         }
-        return task;
     }
 }

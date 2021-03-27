@@ -1,15 +1,15 @@
-package net.ssehub.jacat.worker.analysis.queue;
+package net.ssehub.jacat.worker.analysis;
 
 import lombok.extern.slf4j.Slf4j;
 import net.ssehub.jacat.api.addon.Addon;
-import net.ssehub.jacat.api.addon.task.AbstractAnalysisCapability;
+import net.ssehub.jacat.api.addon.analysis.AbstractAnalysisCapability;
+import net.ssehub.jacat.api.addon.data.DataProcessingRequest;
+import net.ssehub.jacat.api.addon.task.FinishedTask;
 import net.ssehub.jacat.api.addon.task.PreparedTask;
 import net.ssehub.jacat.api.addon.task.Task;
 import net.ssehub.jacat.api.analysis.IAnalysisCapabilities;
 import net.ssehub.jacat.api.analysis.IAnalysisTaskExecutor;
 import net.ssehub.jacat.api.analysis.TaskCompletion;
-import net.ssehub.jacat.worker.analysis.TaskPreparer;
-import net.ssehub.jacat.worker.analysis.TaskScrapper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -47,26 +47,37 @@ public class AnalysisTaskExecutor implements IAnalysisTaskExecutor {
 
         runningTasks.add(task);
 
-        log.info("Currently running tasks: " + this.runningTasks.size());
-        AbstractAnalysisCapability capability =
-            this.capabilities.getCapability(task.getSlug(), task.getLanguage());
+        log.debug("Currently running tasks: " + this.runningTasks.size());
 
-        log.info("Started AnalysingTask (#" + task.getId() + "): [slug=\""
-            + task.getSlug() + "\", language=\"" + task.getLanguage() + "\"]");
+        DataProcessingRequest dataProcessingReq = task.getDataProcessingRequest();
+        AbstractAnalysisCapability capability =
+            this.capabilities.getCapability(dataProcessingReq.getAnalysisSlug(),
+                dataProcessingReq.getCodeLanguage());
+
+        log.info("Started AnalysingTask (#" + task.getId() + "): "
+            + "[slug=\"" + dataProcessingReq.getAnalysisSlug()
+            + "\", language=\"" + dataProcessingReq.getCodeLanguage() + "\"]");
         long timeStart = System.currentTimeMillis();
 
-        PreparedTask result = new PreparedTask(task, null, null);
+
+        PreparedTask preparedTask = new PreparedTask(task, null, null);
+        FinishedTask result;
         try {
             log.debug("Preparing Task (#" + task.getId() + ")");
-            result = this.taskPreparer.prepare(task);
+            preparedTask = this.taskPreparer.prepare(task);
+            log.debug("Preparing Task ends (#" + task.getId() + ")");
             log.debug("Analyzing Task (#" + task.getId() + ")");
-            result = capability.run(result);
+            long analyzingTime = System.currentTimeMillis();
+            result = capability.run(preparedTask);
+            analyzingTime = System.currentTimeMillis() - analyzingTime;
+
+            log.debug("Analyzing (#" + task.getId() + ") finished in " + analyzingTime + "MS");
         } catch (RuntimeException e) {
-            result.setFailedResult(Collections.singletonMap("message", e.getMessage()));
-        } finally {
-            log.debug("Scrapping Task (#" + task.getId() + ")");
-            this.taskScrapper.scrap(result);
+            result = preparedTask.fail(e);
         }
+
+        log.debug("Scrapping Task (#" + task.getId() + ")");
+        this.taskScrapper.scrap(preparedTask);
 
         Task.Status status = result.getStatus();
         if (status == null) {
@@ -80,7 +91,7 @@ public class AnalysisTaskExecutor implements IAnalysisTaskExecutor {
         this.runningTasks.remove(task);
         log.info("Finished AnalysingTask (#" + result.getId() + ") in "
             + time + "ms with status [" + status + "]");
-        log.info("Currently running tasks: " + this.runningTasks.size());
+        log.debug("Currently running tasks: " + this.runningTasks.size());
 
         completion.finish(task);
     }

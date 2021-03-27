@@ -1,7 +1,7 @@
 package net.ssehub.jacat.platform.analysis;
 
 import net.ssehub.jacat.api.addon.Addon;
-import net.ssehub.jacat.api.addon.data.DataSection;
+import net.ssehub.jacat.api.addon.data.DataProcessingRequest;
 import net.ssehub.jacat.api.analysis.IAnalysisCapabilities;
 import net.ssehub.jacat.api.analysis.IAnalysisTaskExecutor;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,8 +19,10 @@ class AnalysisServiceTest {
     public static final String A_HOMEWORK = "A_HOMEWORK";
     public static final String A_COURSE = "A_COURSE";
     public static final String A_PROTOCOL = "A_PROTOCOL";
-    public static final DataSection A_DATA_SECTION = new DataSection(
+    public static final DataProcessingRequest A_DATA_SECTION = new DataProcessingRequest(
         A_PROTOCOL,
+        A_SLUG,
+        A_LANGUAGE,
         A_COURSE,
         A_HOMEWORK,
         A_SUBMISSION

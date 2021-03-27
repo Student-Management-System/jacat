@@ -1,5 +1,6 @@
 package net.ssehub.jacat.platform.analysis;
 
+import net.ssehub.jacat.api.addon.data.DataProcessingRequest;
 import net.ssehub.jacat.platform.analysis.api.CreateAnalysisDto;
 import net.ssehub.jacat.platform.analysis.api.ListAnalysisResultDto;
 import net.ssehub.jacat.platform.course.CoursesConfiguration;
@@ -35,23 +36,23 @@ public class AnalysisController {
     @PostMapping
     public ListAnalysisResultDto startAnalysis(@RequestParam("slug") String slug,
                                                @RequestBody CreateAnalysisDto createAnalysisDto) {
-        if (createAnalysisDto.getData() == null) {
+        DataProcessingRequest data = createAnalysisDto.getData();
+        if (data == null) {
             throw new CourseConfigurationNotFoundException();
         }
 
         Optional<CoursesConfiguration.Course> courseConfiguration =
-            coursesConfiguration.getCourse(createAnalysisDto.getData().getCourse());
+            coursesConfiguration.getCourse(data.getCourse());
 
         courseConfiguration.orElseThrow(CourseConfigurationNotFoundException::new);
 
         CoursesConfiguration.Course foundCourseConfiguration = courseConfiguration.get();
 
-        createAnalysisDto.getData().setProtocol(foundCourseConfiguration.getProtocol());
+        data.setDataCollector(foundCourseConfiguration.getProtocol());
+        data.setCodeLanguage(foundCourseConfiguration.getLanguage());
+        data.setAnalysisSlug(slug);
 
-        AnalysisTask analysisTask =
-            this.analysisService.tryProcess(slug,
-                foundCourseConfiguration.getLanguage(),
-                createAnalysisDto);
+        AnalysisTask analysisTask = this.analysisService.tryProcess(createAnalysisDto);
 
         return new ListAnalysisResultDto(analysisTask);
     }

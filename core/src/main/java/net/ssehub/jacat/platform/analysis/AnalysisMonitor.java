@@ -34,15 +34,16 @@ public class AnalysisMonitor {
         unprocessed.stream()
             .map(analysisTask -> new Task(
                 analysisTask.getId(),
-                analysisTask.getSlug(),
-                analysisTask.getLanguage(),
                 analysisTask.getStatus(),
-                analysisTask.getDataConfiguration(),
+                analysisTask.getDataProcessingRequest(),
                 analysisTask.getRequest(),
                 analysisTask.getResult())
             )
             .filter(taskExecutor::isRunning)
-            .filter(task -> capabilities.isRegistered(task.getSlug(), task.getLanguage()))
+            .filter(task -> capabilities.isRegistered(
+                task.getDataProcessingRequest().getAnalysisSlug(),
+                task.getDataProcessingRequest().getCodeLanguage()
+            ))
             .forEach(analysisService::process);
     }
 }

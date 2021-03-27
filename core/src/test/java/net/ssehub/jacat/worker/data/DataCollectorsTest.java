@@ -1,13 +1,13 @@
 package net.ssehub.jacat.worker.data;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import net.ssehub.jacat.api.addon.Addon;
 import net.ssehub.jacat.api.addon.data.AbstractDataCollector;
-import net.ssehub.jacat.api.addon.data.DataRequest;
+import net.ssehub.jacat.api.addon.data.DataProcessingRequest;
 import net.ssehub.jacat.api.addon.data.SubmissionCollection;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 class DataCollectorsTest {
     public static final String A_NOT_AVAILABLE_COLLECTOR_PROTOCOL =
@@ -76,12 +76,13 @@ class DataCollectorsTest {
         return new AbstractDataCollector(a_protocol) {
 
             @Override
-            public SubmissionCollection collect(DataRequest request) {
+            public SubmissionCollection collect(DataProcessingRequest request) {
                 return null;
             }
 
             @Override
-            public void cleanup(DataRequest request) {}
+            public void cleanup(DataProcessingRequest request) {
+            }
         };
     }
 
@@ -96,7 +97,8 @@ class DataCollectorsTest {
         return new Addon() {
 
             @Override
-            public void onEnable() {}
+            public void onEnable() {
+            }
         };
     }
 }

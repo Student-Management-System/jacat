@@ -1,4 +1,7 @@
-package net.ssehub.jacat.api.addon.task;
+package net.ssehub.jacat.api.addon.analysis;
+
+import net.ssehub.jacat.api.addon.task.FinishedTask;
+import net.ssehub.jacat.api.addon.task.PreparedTask;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -79,5 +82,5 @@ public abstract class AbstractAnalysisCapability {
      * @return Ein zur Laufzeit erstelltes Analyseergebnis, welches
      * abhängig von der Implementierung des Analysetask ist.
      */
-    public abstract PreparedTask run(PreparedTask task);
+    public abstract FinishedTask run(PreparedTask task);
 }

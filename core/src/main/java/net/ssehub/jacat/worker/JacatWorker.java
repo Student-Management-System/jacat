@@ -1,21 +1,16 @@
 package net.ssehub.jacat.worker;
 
-import java.io.File;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import net.ssehub.jacat.api.AbstractJacatWorker;
 import net.ssehub.jacat.api.addon.Addon;
+import net.ssehub.jacat.api.addon.analysis.AbstractAnalysisCapability;
 import net.ssehub.jacat.api.addon.data.AbstractDataCollector;
-import net.ssehub.jacat.api.addon.task.AbstractAnalysisCapability;
 import net.ssehub.jacat.api.analysis.IAnalysisCapabilities;
 import net.ssehub.jacat.worker.data.DataCollectors;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import java.nio.file.Path;
 
 @Service
 @Slf4j
@@ -75,10 +70,10 @@ public class JacatWorker extends AbstractJacatWorker {
         ) {
             super(
                 "The desired capability (slug=\"" +
-                slug +
-                "\", language=\"" +
-                language +
-                "\") is already registered."
+                    slug +
+                    "\", language=\"" +
+                    language +
+                    "\") is already registered."
             );
         }
     }
@@ -89,8 +84,8 @@ public class JacatWorker extends AbstractJacatWorker {
         public DataCollectorAlreadyRegisteredException(String protocol) {
             super(
                 "The desired data collector (protocol=\"" +
-                protocol +
-                "\") is already registered."
+                    protocol +
+                    "\") is already registered."
             );
         }
     }

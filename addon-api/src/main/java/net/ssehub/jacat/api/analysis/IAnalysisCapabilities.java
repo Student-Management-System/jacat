@@ -1,6 +1,6 @@
 package net.ssehub.jacat.api.analysis;
 
-import net.ssehub.jacat.api.addon.task.AbstractAnalysisCapability;
+import net.ssehub.jacat.api.addon.analysis.AbstractAnalysisCapability;
 
 public interface IAnalysisCapabilities<T> {
     void register(T analyzer, AbstractAnalysisCapability analysisCapability);
@@ -16,10 +16,10 @@ public interface IAnalysisCapabilities<T> {
         public CapabilityNotFoundException(String slug, String language) {
             super(
                 "The desired capability (slug=\"" +
-                slug +
-                "\", language=\"" +
-                language +
-                "\" could not be found."
+                    slug +
+                    "\", language=\"" +
+                    language +
+                    "\" could not be found."
             );
         }
     }

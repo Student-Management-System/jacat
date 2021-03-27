@@ -1,7 +1,7 @@
 package net.ssehub.jacat.addon.svndatacollector;
 
 import net.ssehub.jacat.api.addon.data.AbstractDataCollector;
-import net.ssehub.jacat.api.addon.data.DataRequest;
+import net.ssehub.jacat.api.addon.data.DataProcessingRequest;
 import net.ssehub.jacat.api.addon.data.Submission;
 import net.ssehub.jacat.api.addon.data.SubmissionCollection;
 import org.apache.commons.io.FileUtils;
@@ -56,7 +56,7 @@ public class SVNDataCollector extends AbstractDataCollector {
         return clientManager;
     }
 
-    private Path arrange(DataRequest request) {
+    private Path arrange(DataProcessingRequest request) {
         Path directory = this.workdir.resolve(Path.of("request_" + request.hashCode()));
         try {
             this.connect().getUpdateClient().doExport(this.url,
@@ -74,7 +74,7 @@ public class SVNDataCollector extends AbstractDataCollector {
     }
 
     @Override
-    public SubmissionCollection collect(DataRequest dataRequest) {
+    public SubmissionCollection collect(DataProcessingRequest dataRequest) {
         Objects.requireNonNull(dataRequest);
 
         SubmissionCollection submissions = new SubmissionCollection();
@@ -106,7 +106,7 @@ public class SVNDataCollector extends AbstractDataCollector {
     }
 
     @Override
-    public void cleanup(DataRequest request) {
+    public void cleanup(DataProcessingRequest request) {
         Path directory = this.workdir.resolve(Path.of("request_" + request.hashCode()));
         try {
             Files.walk(directory)

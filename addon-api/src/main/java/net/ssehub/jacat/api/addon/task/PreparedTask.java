@@ -10,31 +10,22 @@ import java.util.Objects;
 public class PreparedTask {
     private final String id;
 
-    private final String slug;
+    private final String analyisSlug;
 
-    private final String language;
+    private final String codeLanguage;
 
-    private Task.Status status;
+    private final Path workspace;
 
-    private Path workspace;
-
-    private SubmissionCollection submissions;
+    private final SubmissionCollection submissions;
 
     private final Map<String, Object> request;
 
-    private Map<String, Object> result;
-
     public PreparedTask(Task task, Path workspace, SubmissionCollection submissions) {
         this.id = task.getId();
-        this.slug = task.getSlug();
-        this.language = task.getLanguage();
-        this.status = task.getStatus();
+        this.analyisSlug = task.getDataProcessingRequest().getAnalysisSlug();
+        this.codeLanguage = task.getDataProcessingRequest().getCodeLanguage();
         this.request = task.getRequest();
         this.workspace = workspace;
-        this.submissions = submissions;
-    }
-
-    public void setSubmissions(SubmissionCollection submissions) {
         this.submissions = submissions;
     }
 
@@ -42,35 +33,29 @@ public class PreparedTask {
         return request;
     }
 
-    public String getSlug() {
-        return slug;
+    public FinishedTask success(Map<String, Object> result) {
+        return new FinishedTask(this, Task.Status.SUCCESSFUL, result);
     }
 
-    public String getLanguage() {
-        return language;
+    public FinishedTask fail(Exception ex) {
+        Map<String, Object> errorMap = new HashMap<>();
+        errorMap.put("message", ex.getMessage());
+        errorMap.put("code", ex.getClass().getSimpleName());
+        if (ex.getCause() != null && ex.getCause().getMessage() != null) {
+            errorMap.put("cause", ex.getCause().getMessage());
+        }
+
+        return fail(errorMap);
     }
 
-    public void setSuccessfulResult(Map<String, Object> result) {
-        this.result = result;
-        this.status = Task.Status.SUCCESSFUL;
-    }
-
-    public void setFailedResult(Map<String, Object> result) {
-        this.result = new HashMap<>();
-        this.result.put("error", result);
-        this.status = Task.Status.FAILED;
+    public FinishedTask fail(Map<String, Object> result) {
+        Map<String, Object> errorResult = new HashMap<>();
+        errorResult.put("error", result);
+        return new FinishedTask(this, Task.Status.FAILED, errorResult);
     }
 
     public String getId() {
         return id;
-    }
-
-    public Task.Status getStatus() {
-        return status;
-    }
-
-    public Map<String, Object> getResult() {
-        return result;
     }
 
     @Override
@@ -98,7 +83,4 @@ public class PreparedTask {
         return workspace;
     }
 
-    public void setWorkspace(Path workspace) {
-        this.workspace = workspace;
-    }
 }

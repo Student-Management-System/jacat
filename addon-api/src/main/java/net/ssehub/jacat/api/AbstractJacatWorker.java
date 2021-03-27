@@ -1,14 +1,15 @@
 package net.ssehub.jacat.api;
 
-import java.nio.file.Path;
 import net.ssehub.jacat.api.addon.Addon;
+import net.ssehub.jacat.api.addon.analysis.AbstractAnalysisCapability;
 import net.ssehub.jacat.api.addon.data.AbstractDataCollector;
-import net.ssehub.jacat.api.addon.task.AbstractAnalysisCapability;
+
+import java.nio.file.Path;
 
 /**
  * Diese Klasse beschreibt die Möglichkeiten auf einer
  * Analyse Plattform, die eine Erweiterung (Addon) hat.
- *
+ * <p>
  * Über diese Klasse sollen alle Steuerungen vorgenommen
  * werden, die für eine Erweiterung wichtig sein könnten.
  * Beispielsweise werden hier die Analyseaufgaben registriert
@@ -30,11 +31,11 @@ public abstract class AbstractJacatWorker {
      * AnalyseFähigkeit (AnalysisCapability) die gewünschte
      * Analyse vollständig abdecken kann.
      *
-     * @param addon Muss das laufende Addon sein
+     * @param addon      Muss das laufende Addon sein
      * @param capability Beschreibt die Fähigkeit, die eine
-     *                           Analyse besitzt. Wenn eine Analyse
-     *                           ansteht, wird ein entsprechendes
-     *                           Addon dafür benachrichtigt.
+     *                   Analyse besitzt. Wenn eine Analyse
+     *                   ansteht, wird ein entsprechendes
+     *                   Addon dafür benachrichtigt.
      */
     public abstract void registerAnalysisTask(
         Addon addon,

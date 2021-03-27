@@ -1,18 +1,19 @@
 package net.ssehub.jacat.platform.analysis.api;
 
-import com.fasterxml.jackson.annotation.*;
-import java.util.HashMap;
-import java.util.Map;
+import com.fasterxml.jackson.annotation.JsonAnySetter;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import net.ssehub.jacat.api.addon.data.DataSection;
+import net.ssehub.jacat.api.addon.data.DataProcessingRequest;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class CreateAnalysisDto {
-    private DataSection data;
+    private DataProcessingRequest data;
 
     private Map<String, Object> request = new HashMap<>();
 

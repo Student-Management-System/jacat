@@ -11,6 +11,7 @@ import java.util.concurrent.RejectedExecutionException;
 
 @Service
 public class AnalysisService {
+
     private final IAnalysisCapabilities<Addon> capabilities;
     private final AnalysisTaskRepository repository;
     private final IAnalysisTaskExecutor taskExecutor;
@@ -24,19 +25,16 @@ public class AnalysisService {
         this.taskExecutor = taskExecutor;
     }
 
-    public AnalysisTask tryProcess(
-        String slug,
-        String language,
-        CreateAnalysisDto request
-    ) {
+    public AnalysisTask tryProcess(CreateAnalysisDto request) {
+        String slug = request.getData().getAnalysisSlug();
+        String language = request.getData().getCodeLanguage();
+
         if (!capabilities.isRegistered(slug, language)) {
             throw new CapabilityNotAvailableException(slug, language);
         }
 
         AnalysisTask analysisTask = new AnalysisTask(
-            slug,
-            language,
-            request.getData(),
+            request.getData().clone(),
             request.getRequest()
         );
 
@@ -49,9 +47,8 @@ public class AnalysisService {
     public void process(Task analysisTask) {
         Task task = new Task(
             analysisTask.getId(),
-            analysisTask.getSlug(),
-            analysisTask.getLanguage(),
-            analysisTask.getDataConfiguration(),
+            analysisTask.getStatus(),
+            analysisTask.getDataProcessingRequest().clone(),
             analysisTask.getRequest()
         );
 

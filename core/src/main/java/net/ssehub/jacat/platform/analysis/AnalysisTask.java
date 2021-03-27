@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import net.ssehub.jacat.api.addon.data.DataSection;
+import net.ssehub.jacat.api.addon.data.DataProcessingRequest;
 import net.ssehub.jacat.api.addon.task.Task;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -23,22 +23,15 @@ public class AnalysisTask extends Task {
     public AnalysisTask(Task task) {
         super(
             task.getId(),
-            task.getSlug(),
-            task.getLanguage(),
             task.getStatus(),
-            task.getDataConfiguration(),
+            task.getDataProcessingRequest().clone(),
             task.getRequest(),
             task.getResult()
         );
     }
 
-    public AnalysisTask(
-        String slug,
-        String language,
-        DataSection data,
-        Map<String, Object> request
-    ) {
-        super(null, slug, language, data, request);
+    public AnalysisTask(DataProcessingRequest data, Map<String, Object> request) {
+        super(null, null, data, request);
     }
 
     @Override
