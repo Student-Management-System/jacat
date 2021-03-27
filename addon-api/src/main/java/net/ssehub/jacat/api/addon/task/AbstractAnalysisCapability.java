@@ -25,10 +25,11 @@ public abstract class AbstractAnalysisCapability {
      * als auch die Programmiersprachen werden in LowerCase gespeichert.
      * Hierdurch wird das Auffinden, der Analysefähigkeit durch die
      * Plattform unterstützt.
-     *  @param slug Der Slug unter der die Analyse gefunden werden soll.
-     *             Dieser darf maximal aus einem Wort bestehen und sollte
-     *             keine Umlaute oder Zahlen verwenden.
-     * @param languages Die Sprachen, welche die Analyse abdecken kann.
+     *
+     * @param slug           Der Slug unter der die Analyse gefunden werden soll.
+     *                       Dieser darf maximal aus einem Wort bestehen und sollte
+     *                       keine Umlaute oder Zahlen verwenden.
+     * @param languages      Die Sprachen, welche die Analyse abdecken kann.
      * @param scheduleFactor
      */
     public AbstractAnalysisCapability(
@@ -74,11 +75,9 @@ public abstract class AbstractAnalysisCapability {
      * übergeben, sodass die Analyse parametrisiert gestartet werden
      * kann.
      *
-     * TODO: Validierung der TaskConfiguration
-     *
      * @param task Die Analysekonfiguration, die benötigt wird
      * @return Ein zur Laufzeit erstelltes Analyseergebnis, welches
-     *         abhängig von der Implementierung des Analysetask ist.
+     * abhängig von der Implementierung des Analysetask ist.
      */
     public abstract PreparedTask run(PreparedTask task);
 }

@@ -1,16 +1,18 @@
 package net.ssehub.jacat.addon.svndatacollector;
 
-import com.sun.jna.platform.FileUtils;
 import net.ssehub.jacat.api.addon.data.AbstractDataCollector;
 import net.ssehub.jacat.api.addon.data.DataRequest;
 import net.ssehub.jacat.api.addon.data.Submission;
 import net.ssehub.jacat.api.addon.data.SubmissionCollection;
+import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.tmatesoft.svn.core.SVNDepth;
 import org.tmatesoft.svn.core.SVNException;
 import org.tmatesoft.svn.core.SVNURL;
+import org.tmatesoft.svn.core.auth.BasicAuthenticationManager;
+import org.tmatesoft.svn.core.wc.SVNClientManager;
+import org.tmatesoft.svn.core.wc.SVNInfo;
 import org.tmatesoft.svn.core.wc.SVNRevision;
-import org.tmatesoft.svn.core.wc.SVNUpdateClient;
 
 import java.io.File;
 import java.io.IOException;
@@ -23,33 +25,51 @@ import java.util.stream.Stream;
 
 public class SVNDataCollector extends AbstractDataCollector {
 
-    private SVNUpdateClient updateClient;
-    private SVNURL svnUrl;
+    private final String username;
+    private final String password;
+    private final SVNURL url;
     private Path workdir;
 
     private Logger logger;
 
-    public SVNDataCollector(Logger logger, SVNUpdateClient updateClient, Path workdir, SVNURL url) {
+    public SVNDataCollector(Logger logger, String username, String password, SVNURL url, Path workdir) {
         super("svn-java");
         this.logger = logger;
-        this.svnUrl = url;
+        this.username = username;
+        this.password = password;
+        this.url = url;
         this.workdir = workdir;
-        this.updateClient = updateClient;
+    }
+
+    private SVNClientManager connect() {
+        SVNClientManager clientManager = SVNClientManager.newInstance(null,
+            BasicAuthenticationManager.newInstance(this.username,
+                this.password.toCharArray()));
+
+        try {
+            SVNInfo svnInfo = clientManager.getWCClient()
+                .doInfo(this.url, SVNRevision.HEAD, SVNRevision.HEAD);
+//            this.getLogger().info("Connected to: " + url);
+        } catch (SVNException e) {
+            throw new RuntimeException("Couldn't connect to " + url + ", " + e.getCause(), e.getCause());
+        }
+        return clientManager;
     }
 
     private Path arrange(DataRequest request) {
         Path directory = this.workdir.resolve(Path.of("request_" + request.hashCode()));
         try {
-            updateClient.doCheckout(this.svnUrl,
-                    directory.toFile(),
-                    SVNRevision.HEAD,
-                    SVNRevision.HEAD,
-                    SVNDepth.INFINITY,
-                    true);
+            this.connect().getUpdateClient().doExport(this.url,
+                directory.toFile(),
+                SVNRevision.HEAD,
+                SVNRevision.HEAD,
+                null,
+                true,
+                SVNDepth.INFINITY);
             return directory;
         } catch (SVNException e) {
-            this.logger.error("Couldn't checkout SVN URL " + this.svnUrl, e);
-            throw new RuntimeException("Couldn't checkout SVN URL " + this.svnUrl, e);
+            this.logger.error("Couldn't checkout SVN URL " + this.url, e);
+            throw new RuntimeException("Couldn't checkout SVN URL " + this.url, e);
         }
     }
 
@@ -63,21 +83,21 @@ public class SVNDataCollector extends AbstractDataCollector {
         File base = source.toFile();
 
         Stream<File> homeworksStream = Arrays.stream(Objects.requireNonNull(base.listFiles()))
-                .filter(File::isDirectory)
-                .filter(file -> !file.getName().contains(".svn"))
-                .filter(file -> dataRequest.homeworkMatches(file.getName()));
+            .filter(File::isDirectory)
+            .filter(file -> !file.getName().contains(".svn"))
+            .filter(file -> dataRequest.homeworkMatches(file.getName()));
 
 
         homeworksStream.forEach(homework -> {
             Stream<File> submissionsStream = Arrays.stream(Objects.requireNonNull(homework.listFiles()))
-                    .filter(File::isDirectory)
-                    .filter(file -> !file.getName().contains(".svn"))
-                    .filter(file -> dataRequest.submissionMatches(file.toPath().getFileName().toString()));
+                .filter(File::isDirectory)
+                .filter(file -> !file.getName().contains(".svn"))
+                .filter(file -> dataRequest.submissionMatches(file.toPath().getFileName().toString()));
 
             submissionsStream.map(submission -> new Submission("java",
-                    homework.getName(),
-                    submission.getName(),
-                    submission.toPath())
+                homework.getName(),
+                submission.getName(),
+                submission.toPath())
             ).forEach(submissions::add);
         });
 
@@ -90,12 +110,20 @@ public class SVNDataCollector extends AbstractDataCollector {
         Path directory = this.workdir.resolve(Path.of("request_" + request.hashCode()));
         try {
             Files.walk(directory)
-                    .sorted(Comparator.reverseOrder())
-                    .map(Path::toFile)
-                    .forEach(File::delete);
+                .sorted(Comparator.reverseOrder())
+                .map(Path::toFile)
+                .forEach(File::delete);
+
+            FileUtils.deleteDirectory(directory.toFile());
         } catch (IOException e) {
             this.logger.error("Cannot delete tmp folder: " + directory.toString(), e);
         }
+
+        File workdir = directory.toFile();
+        if (workdir.exists()) {
+            workdir.delete();
+        }
+
     }
 
 }

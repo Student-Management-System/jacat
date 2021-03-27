@@ -7,8 +7,9 @@ spring:
 
 analysis:
   max-tasks: -1
+
 courses:
-  - course: java
+  - course: java-wise1920
     protocol: svn-java
     language: java
   - course: c++

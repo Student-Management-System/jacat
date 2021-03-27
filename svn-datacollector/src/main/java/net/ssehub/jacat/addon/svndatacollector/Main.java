@@ -6,11 +6,6 @@ import net.ssehub.jacat.addon.svndatacollector.config.Configuration;
 import net.ssehub.jacat.api.addon.Addon;
 import org.tmatesoft.svn.core.SVNException;
 import org.tmatesoft.svn.core.SVNURL;
-import org.tmatesoft.svn.core.auth.BasicAuthenticationManager;
-import org.tmatesoft.svn.core.wc.SVNClientManager;
-import org.tmatesoft.svn.core.wc.SVNInfo;
-import org.tmatesoft.svn.core.wc.SVNRevision;
-import org.tmatesoft.svn.core.wc.SVNUpdateClient;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,7 +14,7 @@ import java.nio.file.Path;
 
 public class Main extends Addon {
 
-    private Path pluginDir = Path.of( "addons", "svn-dc");
+    private Path pluginDir = Path.of("addons", "svn-dc");
     private Configuration configuration;
 
     @Override
@@ -28,10 +23,6 @@ public class Main extends Addon {
 
         initializeConfiguration();
 
-        SVNClientManager clientManager = SVNClientManager.newInstance(null,
-                BasicAuthenticationManager.newInstance(configuration.getSvn().getUsername(),
-                        configuration.getSvn().getPassword().toCharArray()));
-        SVNUpdateClient updateClient = clientManager.getUpdateClient();
 
         Path workdir = pluginDir.resolve("tmp");
         if (!workdir.toFile().exists() && !workdir.toFile().mkdir()) {
@@ -47,16 +38,11 @@ public class Main extends Addon {
             throw new RuntimeException("Couldn't parse URL: " + url, e);
         }
 
-        try {
-            SVNInfo svnInfo = clientManager.getWCClient()
-                    .doInfo(svnUrl, SVNRevision.HEAD, SVNRevision.HEAD);
-            this.getLogger().info("Connected to: " + url);
-        } catch (SVNException e) {
-            throw new RuntimeException("Couldn't connect to " + url + ", " + e.getCause(), e.getCause());
-        }
-
-        SVNDataCollector collector = new SVNDataCollector(this.getLogger(), updateClient,
-                workdir, svnUrl);
+        SVNDataCollector collector = new SVNDataCollector(this.getLogger(),
+            this.configuration.getSvn().getUsername(),
+            this.configuration.getSvn().getPassword(),
+            svnUrl,
+            workdir);
         this.getWorker().registerDataCollector(this, collector);
     }
 
