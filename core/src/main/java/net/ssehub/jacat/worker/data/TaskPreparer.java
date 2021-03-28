@@ -1,4 +1,4 @@
-package net.ssehub.jacat.worker.analysis;
+package net.ssehub.jacat.worker.data;
 
 import lombok.extern.slf4j.Slf4j;
 import net.ssehub.jacat.api.addon.data.AbstractDataCollector;
@@ -7,8 +7,7 @@ import net.ssehub.jacat.api.addon.data.ResourceNotAvailableException;
 import net.ssehub.jacat.api.addon.data.SubmissionCollection;
 import net.ssehub.jacat.api.addon.task.PreparedTask;
 import net.ssehub.jacat.api.addon.task.Task;
-import net.ssehub.jacat.worker.data.CopySubmissionVisitor;
-import net.ssehub.jacat.worker.data.DataCollectors;
+import net.ssehub.jacat.worker.analysis.ITaskPreparer;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
@@ -16,18 +15,17 @@ import java.nio.file.Path;
 
 @Component
 @Slf4j
-public class TaskPreparer {
+public class TaskPreparer implements ITaskPreparer {
     private final Path workdir;
     private final DataCollectors dataCollectors;
 
-    public TaskPreparer(
-        @Qualifier("workdir") Path workdir,
-        DataCollectors dataCollectors
-    ) {
+    public TaskPreparer(@Qualifier("workdir") Path workdir,
+                        DataCollectors dataCollectors) {
         this.workdir = workdir;
         this.dataCollectors = dataCollectors;
     }
 
+    @Override
     public PreparedTask prepare(Task task) {
         DataProcessingRequest dataProcessingRequest = task.getDataProcessingRequest();
 

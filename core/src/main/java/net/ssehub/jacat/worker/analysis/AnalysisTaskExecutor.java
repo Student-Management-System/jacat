@@ -21,14 +21,14 @@ import java.util.Set;
 @Slf4j
 public class AnalysisTaskExecutor implements IAnalysisTaskExecutor {
     private final IAnalysisCapabilities<Addon> capabilities;
-    private final TaskPreparer taskPreparer;
-    private final TaskScrapper taskScrapper;
+    private final ITaskPreparer taskPreparer;
+    private final ITaskScrapper taskScrapper;
 
     private Set<Task> runningTasks = Collections.synchronizedSet(new HashSet<>());
 
     public AnalysisTaskExecutor(IAnalysisCapabilities<Addon> capabilities,
-                                TaskPreparer taskPreparer,
-                                TaskScrapper taskScrapper) {
+                                ITaskPreparer taskPreparer,
+                                ITaskScrapper taskScrapper) {
         this.capabilities = capabilities;
         this.taskPreparer = taskPreparer;
         this.taskScrapper = taskScrapper;

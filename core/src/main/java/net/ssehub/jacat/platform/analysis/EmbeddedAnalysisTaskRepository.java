@@ -143,10 +143,8 @@ public class EmbeddedAnalysisTaskRepository implements AnalysisTaskRepository {
     }
 
     @Override
-    public <S extends AnalysisTask> Page<S> findAll(
-        Example<S> example,
-        Pageable pageable
-    ) {
+    public <S extends AnalysisTask> Page<S> findAll(Example<S> example,
+                                                    Pageable pageable) {
         return null;
     }
 

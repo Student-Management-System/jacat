@@ -1,7 +1,8 @@
-package net.ssehub.jacat.worker.analysis;
+package net.ssehub.jacat.worker.data;
 
 import lombok.extern.slf4j.Slf4j;
 import net.ssehub.jacat.api.addon.task.PreparedTask;
+import net.ssehub.jacat.worker.analysis.ITaskScrapper;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
@@ -11,8 +12,9 @@ import java.util.Comparator;
 
 @Component
 @Slf4j
-public class TaskScrapper {
+public class TaskScrapper implements ITaskScrapper {
 
+    @Override
     public void scrap(PreparedTask task) {
         if (task == null || task.getWorkspace() == null) {
             return;

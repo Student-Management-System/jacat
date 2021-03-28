@@ -1,39 +1,32 @@
 package net.ssehub.jacat.worker.addon;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Enumeration;
-import java.util.Map;
-import java.util.Optional;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
 import net.ssehub.jacat.api.addon.AddonDescription;
 import net.ssehub.jacat.worker.JacatWorker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.yaml.snakeyaml.Yaml;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.nio.file.Path;
+import java.util.Enumeration;
+import java.util.Map;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 @Component
 public class AddonLoader {
     private JacatWorker jacatPlatform;
-    private AddonManager addonManager;
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    public AddonLoader(
-        @Qualifier("workdir") Path workdir,
-        JacatWorker jacatPlatform,
-        AddonManager addonManager
-    ) {
+    public AddonLoader(@Qualifier("workdir") Path workdir,
+                       JacatWorker jacatPlatform) {
         this.jacatPlatform = jacatPlatform;
-        this.addonManager = addonManager;
         loadAddonFolder(workdir.resolve("addons").toFile());
     }
 
@@ -60,19 +53,14 @@ public class AddonLoader {
         }
 
         try {
-            AddonClassLoader classLoader = new AddonClassLoader(
-                file,
-                addonDescription,
-                this.jacatPlatform
-            );
-            this.addonManager.addAddon(classLoader.getLoadedAddon());
+            new AddonClassLoader(file, addonDescription, this.jacatPlatform);
         } catch (AddonNotLoadableException | MalformedURLException e) {
             this.logger.error(
-                    "Could not load addon: " +
+                "Could not load addon: " +
                     addonDescription.getName() +
                     " - " +
                     file.getAbsolutePath()
-                );
+            );
             String message = e.getCause().getMessage();
             if (message == null) {
                 message = e.getMessage();
@@ -89,7 +77,7 @@ public class AddonLoader {
                 final JarEntry entry = entries.nextElement();
                 if (
                     entry.getName().equalsIgnoreCase("addon.yml") ||
-                    entry.getName().equalsIgnoreCase("addon.yaml")
+                        entry.getName().equalsIgnoreCase("addon.yaml")
                 ) {
                     InputStream input = jarFile.getInputStream(entry);
                     Yaml yaml = new Yaml();

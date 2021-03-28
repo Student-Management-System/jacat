@@ -5,6 +5,7 @@ import net.ssehub.jacat.api.addon.task.Task;
 import net.ssehub.jacat.api.analysis.IAnalysisCapabilities;
 import net.ssehub.jacat.api.analysis.IAnalysisTaskExecutor;
 import net.ssehub.jacat.platform.analysis.api.CreateAnalysisDto;
+import net.ssehub.jacat.platform.analysis.exception.CapabilityNotAvailableException;
 import org.springframework.stereotype.Service;
 
 import java.util.concurrent.RejectedExecutionException;
