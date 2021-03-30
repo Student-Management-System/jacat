@@ -3,7 +3,8 @@
     <img src="images/logo.png" alt="Logo" width="80" height="80">
   </a>
 
-  <h3 align="center">JaCAT - Just another Code Analyzing Tool</h3>
+  <h3 align="center">JaCAT - Just another Code Analyzing Tool &nbsp;&nbsp;<img src="https://jenkins-2.sse.uni-hildesheim.de/buildStatus/icon?job=Teaching_JaCAT&style=flat-square" alt="Build Status"></h3> 
+
 </p>
 
 
