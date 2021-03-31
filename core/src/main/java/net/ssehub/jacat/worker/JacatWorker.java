@@ -19,11 +19,9 @@ public class JacatWorker extends AbstractJacatWorker {
     private DataCollectors dataCollectors;
     private Path workdir;
 
-    public JacatWorker(
-        @Qualifier("workdir") Path workdir,
-        IAnalysisCapabilities<Addon> analysisCapabilities,
-        DataCollectors dataCollectors
-    ) {
+    public JacatWorker(@Qualifier("workdir") Path workdir,
+                       IAnalysisCapabilities<Addon> analysisCapabilities,
+                       DataCollectors dataCollectors) {
         this.workdir = workdir;
         this.analysisCapabilities = analysisCapabilities;
         this.dataCollectors = dataCollectors;

@@ -1,15 +1,15 @@
 package net.ssehub.jacat.worker.addon;
 
-import static org.junit.jupiter.api.Assertions.*;
+import net.ssehub.jacat.api.addon.AddonDescription;
+import net.ssehub.jacat.worker.JacatWorker;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Path;
-import java.util.Optional;
-import net.ssehub.jacat.api.addon.AddonDescription;
-import net.ssehub.jacat.worker.JacatWorker;
-import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 class AddonClassLoaderTest {
 
@@ -20,7 +20,8 @@ class AddonClassLoaderTest {
                 AddonClassLoader addonClassLoader = new AddonClassLoader(
                     getTestAddonJar(),
                     new AddonDescription("net.ssehub.test.addon.Functional", "TestAddon"),
-                    new JacatWorker(Path.of("."), null, null)
+                    new JacatWorker(Path.of("."), null, null),
+                    this.getClass().getClassLoader()
                 );
 
                 assertNotNull(addonClassLoader.getLoadedAddon());
@@ -39,14 +40,15 @@ class AddonClassLoaderTest {
                         "net.ssehub.test.addon.NonFunctional",
                         "TestAddon"
                     ),
-                    new JacatWorker(Path.of("./"), null, null)
+                    new JacatWorker(Path.of("./"), null, null),
+                    this.getClass().getClassLoader()
                 );
             }
         );
     }
 
     private File getTestAddonJar() throws URISyntaxException {
-        URL resource = getClass().getClassLoader().getResource("test-addons.jar");
+        URL resource = getClass().getClassLoader().getResource("addons/test-addons.jar");
         if (resource == null) {
             throw new IllegalArgumentException("file not found!");
         } else {

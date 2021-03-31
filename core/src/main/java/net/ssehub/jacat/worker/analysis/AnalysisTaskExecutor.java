@@ -44,7 +44,7 @@ public class AnalysisTaskExecutor implements IAnalysisTaskExecutor {
         if (this.runningTasks.contains(task)) {
             return;
         }
-
+        long timeStart = System.currentTimeMillis();
         runningTasks.add(task);
 
         log.debug("Currently running tasks: " + this.runningTasks.size());
@@ -57,9 +57,7 @@ public class AnalysisTaskExecutor implements IAnalysisTaskExecutor {
         log.info("Started AnalysingTask (#" + task.getId() + "): "
             + "[slug=\"" + dataProcessingReq.getAnalysisSlug()
             + "\", language=\"" + dataProcessingReq.getCodeLanguage() + "\"]");
-        long timeStart = System.currentTimeMillis();
-
-
+        
         PreparedTask preparedTask = new PreparedTask(task, null, null);
         FinishedTask result;
         try {

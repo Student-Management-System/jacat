@@ -1,2 +1,2 @@
-main: net.ssehub.test.addon.Main
+main: net.ssehub.test.addon.Functional
 name: Test Plugin - only used in tests

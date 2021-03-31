@@ -29,7 +29,7 @@ buildNumber.properties
 # debug
 debug/**
 
-!core/src/test/resources/test-addons.jar
+!core/src/test/resources/addons/test-addons.jar
 
 
 # Generated files

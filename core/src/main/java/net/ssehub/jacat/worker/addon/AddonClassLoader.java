@@ -24,11 +24,10 @@ public class AddonClassLoader extends URLClassLoader {
 
     public AddonClassLoader(final File addonJarFile,
                             AddonDescription addonDescription,
-                            JacatWorker jacatWorker) throws MalformedURLException {
-        super(
-            new URL[] {addonJarFile.toURI().toURL()},
-            AddonClassLoader.class.getClassLoader()
-        );
+                            JacatWorker jacatWorker,
+                            ClassLoader parent) throws MalformedURLException {
+        super(new URL[] {addonJarFile.toURI().toURL()}, parent);
+
         this.addonJarFile = addonJarFile;
 
         try {
@@ -36,9 +35,11 @@ public class AddonClassLoader extends URLClassLoader {
             logger.info(
                 "Going to load: " + loggerName + " - " + addonJarFile.getAbsolutePath()
             );
+            this.loadClass(addonDescription.getMainClass());
+
             Class<?> jarClass = Class.forName(
                 addonDescription.getMainClass(),
-                true,
+                false,
                 this
             );
             Object addon = jarClass.getDeclaredConstructor().newInstance();
@@ -48,7 +49,7 @@ public class AddonClassLoader extends URLClassLoader {
             setCustomValue(addon, LOGGER_FIELD_NAME, LoggerFactory.getLogger(loggerName));
 
             ((Addon) addon).onEnable();
-            
+
             this.addon = (Addon) addon;
 
             logger.info("A:[" + addonDescription.getName() + "] successfully loaded.");

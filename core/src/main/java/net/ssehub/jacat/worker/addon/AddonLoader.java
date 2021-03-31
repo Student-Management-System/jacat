@@ -1,9 +1,9 @@
 package net.ssehub.jacat.worker.addon;
 
+import lombok.extern.slf4j.Slf4j;
+import net.ssehub.jacat.api.addon.Addon;
 import net.ssehub.jacat.api.addon.AddonDescription;
 import net.ssehub.jacat.worker.JacatWorker;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.yaml.snakeyaml.Yaml;
@@ -13,20 +13,25 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.util.stream.Collectors;
 
 @Component
+@Slf4j
 public class AddonLoader {
     private JacatWorker jacatPlatform;
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private List<Addon> loadedAddons;
 
     public AddonLoader(@Qualifier("workdir") Path workdir,
                        JacatWorker jacatPlatform) {
         this.jacatPlatform = jacatPlatform;
+        this.loadedAddons = new ArrayList<>();
         loadAddonFolder(workdir.resolve("addons").toFile());
     }
 
@@ -47,15 +52,27 @@ public class AddonLoader {
         }
     }
 
+    public boolean isLoaded(String javaClass) {
+        return loadedAddons.stream()
+            .map(addon -> addon.getDescription().getMainClass())
+            .collect(Collectors.toList())
+            .contains(javaClass);
+    }
+
     public void loadAddon(File file, AddonDescription addonDescription) {
         if (file == null) {
             return;
         }
 
         try {
-            new AddonClassLoader(file, addonDescription, this.jacatPlatform);
+            AddonClassLoader addonClassLoader =
+                new AddonClassLoader(file,
+                    addonDescription,
+                    this.jacatPlatform,
+                    this.getClass().getClassLoader());
+            this.loadedAddons.add(addonClassLoader.getLoadedAddon());
         } catch (AddonNotLoadableException | MalformedURLException e) {
-            this.logger.error(
+            log.error(
                 "Could not load addon: " +
                     addonDescription.getName() +
                     " - " +
@@ -65,7 +82,7 @@ public class AddonLoader {
             if (message == null) {
                 message = e.getMessage();
             }
-            this.logger.error("Cause: " + message);
+            log.error("Cause: " + message);
         }
     }
 
