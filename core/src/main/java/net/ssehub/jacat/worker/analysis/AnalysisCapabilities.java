@@ -13,6 +13,10 @@ public class AnalysisCapabilities implements IAnalysisCapabilities<Addon> {
     private Map<AbstractAnalysisCapability, Addon> capabilities = new HashMap<>();
 
     public void register(Addon addon, AbstractAnalysisCapability analysisCapability) {
+        if (addon == null || analysisCapability == null) {
+            return;
+        }
+
         this.capabilities.put(analysisCapability, addon);
     }
 
