@@ -215,5 +215,15 @@ public class DataProcessingRequest {
             this.getSubmission());
     }
 
-
+    @Override
+    public String toString() {
+        return "DataProcessingRequest{" +
+                "dataCollector='" + dataCollector + '\'' +
+                ", course='" + course + '\'' +
+                ", homework='" + homework + '\'' +
+                ", submission='" + submission + '\'' +
+                ", analysisSlug='" + analysisSlug + '\'' +
+                ", codeLanguage='" + codeLanguage + '\'' +
+                '}';
+    }
 }

@@ -41,11 +41,11 @@ public class AnalysisTaskExecutor implements IAnalysisTaskExecutor {
 
     @Async
     public void process(Task task, TaskCompletion completion) {
-        if (this.runningTasks.contains(task)) {
+        if (this.isRunning(task)) {
             return;
         }
         long timeStart = System.currentTimeMillis();
-        runningTasks.add(task);
+        this.runningTasks.add(task);
 
         log.debug("Currently running tasks: " + this.runningTasks.size());
 
