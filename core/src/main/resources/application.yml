@@ -6,7 +6,7 @@ spring:
       database: jacat
 
 analysis:
-  max-tasks: -1
+  max-threads: -1
 
 courses:
   - course: java-wise1920

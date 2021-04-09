@@ -32,10 +32,13 @@ public class AddonLoader {
                        JacatWorker jacatPlatform) {
         this.jacatPlatform = jacatPlatform;
         this.loadedAddons = new ArrayList<>();
-        loadAddonFolder(workdir.resolve("addons").toFile());
+
+        if (workdir != null) {
+            loadAddonFolder(workdir.resolve("addons").toFile());
+        }
     }
 
-    public void loadAddonFolder(File folder) {
+    void loadAddonFolder(File folder) {
         if (folder == null || !folder.isDirectory()) {
             return;
         }
@@ -52,14 +55,18 @@ public class AddonLoader {
         }
     }
 
-    public boolean isLoaded(String javaClass) {
+    boolean isLoaded(String javaClass) {
         return loadedAddons.stream()
             .map(addon -> addon.getDescription().getMainClass())
             .collect(Collectors.toList())
             .contains(javaClass);
     }
 
-    public void loadAddon(File file, AddonDescription addonDescription) {
+    List<Addon> getLoadedAddons() {
+        return new ArrayList<>(this.loadedAddons);
+    }
+
+    void loadAddon(File file, AddonDescription addonDescription) {
         if (file == null) {
             return;
         }

@@ -35,6 +35,7 @@ public class AddonClassLoader extends URLClassLoader {
             logger.info(
                 "Going to load: " + loggerName + " - " + addonJarFile.getAbsolutePath()
             );
+
             this.loadClass(addonDescription.getMainClass());
 
             Class<?> jarClass = Class.forName(
@@ -54,7 +55,6 @@ public class AddonClassLoader extends URLClassLoader {
 
             logger.info("A:[" + addonDescription.getName() + "] successfully loaded.");
         } catch (Exception e) {
-            e.printStackTrace();
             throw new AddonNotLoadableException(e);
         }
     }
