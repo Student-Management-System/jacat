@@ -17,10 +17,9 @@ public class AnalysisService {
     private final AnalysisTaskRepository repository;
     private final IAnalysisTaskExecutor taskExecutor;
 
-    public AnalysisService(
-        IAnalysisCapabilities<Addon> capabilities,
-        AnalysisTaskRepository repository,
-        IAnalysisTaskExecutor taskExecutor) {
+    public AnalysisService(IAnalysisCapabilities<Addon> capabilities,
+                           AnalysisTaskRepository repository,
+                           IAnalysisTaskExecutor taskExecutor) {
         this.capabilities = capabilities;
         this.repository = repository;
         this.taskExecutor = taskExecutor;
@@ -57,7 +56,7 @@ public class AnalysisService {
             this.taskExecutor.process(task,
                 (finishedTask) -> this.repository.save(new AnalysisTask(finishedTask)));
         } catch (RejectedExecutionException ex) {
-
+            // TODO: what to do, if thread pool cant handle a new task?
         }
 
     }
