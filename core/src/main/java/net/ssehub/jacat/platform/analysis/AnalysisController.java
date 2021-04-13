@@ -5,7 +5,8 @@ import net.ssehub.jacat.platform.analysis.api.CreateAnalysisDto;
 import net.ssehub.jacat.platform.analysis.api.ListAnalysisResultDto;
 import net.ssehub.jacat.platform.analysis.exception.AnalysisTaskNotFoundException;
 import net.ssehub.jacat.platform.analysis.exception.CourseConfigurationNotFoundException;
-import net.ssehub.jacat.platform.course.CoursesConfiguration;
+import net.ssehub.jacat.platform.course.config.CourseConfig;
+import net.ssehub.jacat.platform.course.config.CoursesConfig;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
@@ -15,14 +16,14 @@ import java.util.Optional;
 public class AnalysisController {
     private AnalysisService analysisService;
     private AnalysisTaskRepository repository;
-    private CoursesConfiguration coursesConfiguration;
+    private CoursesConfig coursesConfig;
 
     public AnalysisController(AnalysisService analysisService,
                               AnalysisTaskRepository repository,
-                              CoursesConfiguration coursesConfiguration) {
+                              CoursesConfig coursesConfig) {
         this.analysisService = analysisService;
         this.repository = repository;
-        this.coursesConfiguration = coursesConfiguration;
+        this.coursesConfig = coursesConfig;
     }
 
     @GetMapping("/{task}")
@@ -39,12 +40,12 @@ public class AnalysisController {
             throw new CourseConfigurationNotFoundException();
         }
 
-        Optional<CoursesConfiguration.Course> courseConfiguration =
-            coursesConfiguration.getCourse(data.getCourse());
+        Optional<CourseConfig> courseConfiguration =
+            coursesConfig.getCourse(data.getCourse());
 
         courseConfiguration.orElseThrow(CourseConfigurationNotFoundException::new);
 
-        CoursesConfiguration.Course foundCourseConfiguration = courseConfiguration.get();
+        CourseConfig foundCourseConfiguration = courseConfiguration.get();
 
         data.setDataCollector(foundCourseConfiguration.getProtocol());
         data.setCodeLanguage(foundCourseConfiguration.getLanguage());

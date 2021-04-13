@@ -12,6 +12,13 @@ courses:
   - course: java-wise1920
     protocol: svn-java
     language: java
+    listeners:
+      - event: ASSIGNMENT_STATE_CHANGED
+        payload:
+          state: IN_REVIEW
+        analysis: "pp1plag"
+        defaultParams:
+          similarityThreshold: 100.0
   - course: c++
     protocol: local
     language: c++
