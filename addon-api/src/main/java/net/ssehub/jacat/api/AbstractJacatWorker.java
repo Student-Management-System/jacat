@@ -3,6 +3,7 @@ package net.ssehub.jacat.api;
 import net.ssehub.jacat.api.addon.Addon;
 import net.ssehub.jacat.api.addon.analysis.AbstractAnalysisCapability;
 import net.ssehub.jacat.api.addon.data.AbstractDataCollector;
+import net.ssehub.jacat.api.studmgmt.IStudMgmtClient;
 
 import java.nio.file.Path;
 
@@ -46,6 +47,8 @@ public abstract class AbstractJacatWorker {
         Addon addon,
         AbstractDataCollector collector
     );
+
+    public abstract IStudMgmtClient getStudMgmtClient();
 
     public abstract Path getWorkingDir();
 }

@@ -6,7 +6,7 @@ import net.ssehub.jacat.api.addon.Addon;
 import net.ssehub.jacat.api.addon.analysis.AbstractAnalysisCapability;
 import net.ssehub.jacat.api.addon.data.AbstractDataCollector;
 import net.ssehub.jacat.api.analysis.IAnalysisCapabilities;
-import net.ssehub.jacat.platform.auth.StudMgmtClient;
+import net.ssehub.jacat.api.studmgmt.IStudMgmtClient;
 import net.ssehub.jacat.worker.data.DataCollectors;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -21,12 +21,12 @@ public class JacatWorker extends AbstractJacatWorker {
     private DataCollectors dataCollectors;
     private Path workdir;
 
-    private final StudMgmtClient studMgmtClient;
+    private final IStudMgmtClient studMgmtClient;
 
     public JacatWorker(@Qualifier("workdir") Path workdir,
                        IAnalysisCapabilities<Addon> analysisCapabilities,
                        DataCollectors dataCollectors,
-                       StudMgmtClient studMgmtClient) {
+                       IStudMgmtClient studMgmtClient) {
         this.workdir = workdir;
         this.analysisCapabilities = analysisCapabilities;
         this.dataCollectors = dataCollectors;
@@ -60,7 +60,7 @@ public class JacatWorker extends AbstractJacatWorker {
         this.dataCollectors.register(addon, collector);
     }
 
-    public StudMgmtClient getStudMgmtClient() {
+    public IStudMgmtClient getStudMgmtClient() {
         return studMgmtClient;
     }
 
