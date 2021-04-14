@@ -23,7 +23,8 @@ public class NotificationsController {
         coursesConfig.getCourse(notification.getCourseId()).ifPresent(
             course -> course.getListeners().stream()
                 .filter(listener -> listener.isListening(notification))
-                .forEach(listener -> eventProcessor.process(course, listener)));
+                .forEach(listener ->
+                    eventProcessor.process(notification.getAssignmentId(), course, listener)));
     }
 
 }

@@ -8,6 +8,14 @@ spring:
 analysis:
   max-threads: -1
 
+sparky-auth:
+  basePath: http://147.172.178.30:8080
+  username: ${sparky-auth-username}
+  password: ${sparky-auth-password}
+
+student-mgmt:
+  basePath: http://localhost:3000
+
 courses:
   - course: java-wise1920
     protocol: svn-java

@@ -47,7 +47,7 @@ public class TaskPreparer implements ITaskPreparer {
         } finally {
             log.debug("Cleanup Temp started (#" + task.getId() + ")");
             if (collection != null) {
-                collector.cleanup(dataProcessingRequest);
+//                collector.cleanup(dataProcessingRequest);
             }
             log.debug("Cleanup Temp ended (#" + task.getId() + ")");
         }
