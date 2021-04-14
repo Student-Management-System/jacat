@@ -36,7 +36,7 @@ class AnalysisServiceTest {
     public static final String AN_ID = "AN_ID";
 
     private AnalysisService analysisService;
-    private IAnalysisCapabilities<Addon> mockAddonCapabilities;
+    private IAnalysisCapabilities mockAddonCapabilities;
     private AnalysisTaskRepository mockRepository;
     private IAnalysisTaskExecutor mockExecutor;
 

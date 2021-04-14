@@ -1,7 +1,6 @@
 package net.ssehub.jacat.worker.analysis;
 
 import lombok.extern.slf4j.Slf4j;
-import net.ssehub.jacat.api.addon.Addon;
 import net.ssehub.jacat.api.addon.analysis.AbstractAnalysisCapability;
 import net.ssehub.jacat.api.addon.data.DataProcessingRequest;
 import net.ssehub.jacat.api.addon.task.FinishedTask;
@@ -10,6 +9,7 @@ import net.ssehub.jacat.api.addon.task.Task;
 import net.ssehub.jacat.api.analysis.IAnalysisCapabilities;
 import net.ssehub.jacat.api.analysis.IAnalysisTaskExecutor;
 import net.ssehub.jacat.api.analysis.TaskCompletion;
+import net.ssehub.jacat.worker.result.ResultProcessors;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -20,18 +20,21 @@ import java.util.Set;
 @Service
 @Slf4j
 public class AnalysisTaskExecutor implements IAnalysisTaskExecutor {
-    private final IAnalysisCapabilities<Addon> capabilities;
+    private final IAnalysisCapabilities capabilities;
     private final ITaskPreparer taskPreparer;
     private final ITaskScrapper taskScrapper;
+    private final ResultProcessors resultProcessors;
 
     private Set<Task> runningTasks = Collections.synchronizedSet(new HashSet<>());
 
-    public AnalysisTaskExecutor(IAnalysisCapabilities<Addon> capabilities,
+    public AnalysisTaskExecutor(IAnalysisCapabilities capabilities,
                                 ITaskPreparer taskPreparer,
-                                ITaskScrapper taskScrapper) {
+                                ITaskScrapper taskScrapper,
+                                ResultProcessors resultProcessors) {
         this.capabilities = capabilities;
         this.taskPreparer = taskPreparer;
         this.taskScrapper = taskScrapper;
+        this.resultProcessors = resultProcessors;
     }
 
     @Override
@@ -76,6 +79,8 @@ public class AnalysisTaskExecutor implements IAnalysisTaskExecutor {
 
         log.debug("Scrapping Task (#" + task.getId() + ")");
         this.taskScrapper.scrap(preparedTask);
+
+        this.resultProcessors.process(result.getResult());
 
         Task.Status status = result.getStatus();
         if (status == null) {

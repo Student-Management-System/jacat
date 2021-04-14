@@ -10,7 +10,7 @@ public class Main extends Addon {
     public void onEnable() {
         Path workdir = this.getWorker().getWorkingDir();
 
-        this.getWorker().registerAnalysisTask(this, new JPlagAnalyzer(workdir));
+        this.getWorker().registerAnalysisCapability(this, new JPlagAnalyzer(workdir));
         this.getLogger().info("JPlag Analyzer successfully loaded");
     }
 

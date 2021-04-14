@@ -7,13 +7,13 @@ import net.ssehub.jacat.api.addon.task.PreparedTask;
 import net.ssehub.jacat.api.addon.task.Task;
 import net.ssehub.jacat.api.analysis.IAnalysisCapabilities;
 import net.ssehub.jacat.api.analysis.TaskCompletion;
+import net.ssehub.jacat.worker.result.ResultProcessors;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.ArgumentCaptor;
 
 import java.util.Collections;
@@ -31,6 +31,7 @@ class AnalysisTaskExecutorTest {
     private IAnalysisCapabilities mockCapabilities;
     private ITaskPreparer mockPreparer;
     private ITaskScrapper mockScrapper;
+    private ResultProcessors mockResultProcessors;
     private AnalysisTaskExecutor uut;
 
     public static final String A_DATACOLLECTOR = "A_DATACOLLECTOR";
@@ -60,7 +61,9 @@ class AnalysisTaskExecutorTest {
         mockPreparer();
 
         this.mockScrapper = mock(ITaskScrapper.class);
-        this.uut = new AnalysisTaskExecutor(mockCapabilities, mockPreparer, mockScrapper);
+
+        this.mockResultProcessors = mock(ResultProcessors.class);
+        this.uut = new AnalysisTaskExecutor(mockCapabilities, mockPreparer, mockScrapper, mockResultProcessors);
     }
 
     @Test

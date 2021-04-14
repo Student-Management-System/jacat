@@ -13,11 +13,11 @@ import java.util.concurrent.RejectedExecutionException;
 @Service
 public class AnalysisService {
 
-    private final IAnalysisCapabilities<Addon> capabilities;
+    private final IAnalysisCapabilities capabilities;
     private final AnalysisTaskRepository repository;
     private final IAnalysisTaskExecutor taskExecutor;
 
-    public AnalysisService(IAnalysisCapabilities<Addon> capabilities,
+    public AnalysisService(IAnalysisCapabilities capabilities,
                            AnalysisTaskRepository repository,
                            IAnalysisTaskExecutor taskExecutor) {
         this.capabilities = capabilities;

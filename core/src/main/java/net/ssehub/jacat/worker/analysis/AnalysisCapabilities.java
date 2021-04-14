@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Component
-public class AnalysisCapabilities implements IAnalysisCapabilities<Addon> {
+public class AnalysisCapabilities implements IAnalysisCapabilities {
     private Map<AbstractAnalysisCapability, Addon> capabilities = new HashMap<>();
 
     public void register(Addon addon, AbstractAnalysisCapability analysisCapability) {

@@ -5,9 +5,11 @@ import net.ssehub.jacat.api.AbstractJacatWorker;
 import net.ssehub.jacat.api.addon.Addon;
 import net.ssehub.jacat.api.addon.analysis.AbstractAnalysisCapability;
 import net.ssehub.jacat.api.addon.data.AbstractDataCollector;
+import net.ssehub.jacat.api.addon.result.AbstractResultProcessor;
 import net.ssehub.jacat.api.analysis.IAnalysisCapabilities;
 import net.ssehub.jacat.api.studmgmt.IStudMgmtClient;
 import net.ssehub.jacat.worker.data.DataCollectors;
+import net.ssehub.jacat.worker.result.ResultProcessors;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
@@ -17,19 +19,21 @@ import java.nio.file.Path;
 @Slf4j
 public class JacatWorker extends AbstractJacatWorker {
 
-    private IAnalysisCapabilities<Addon> analysisCapabilities;
+    private IAnalysisCapabilities analysisCapabilities;
     private DataCollectors dataCollectors;
+    private ResultProcessors resultProcessors;
     private Path workdir;
 
     private final IStudMgmtClient studMgmtClient;
 
     public JacatWorker(@Qualifier("workdir") Path workdir,
-                       IAnalysisCapabilities<Addon> analysisCapabilities,
+                       IAnalysisCapabilities analysisCapabilities,
                        DataCollectors dataCollectors,
-                       IStudMgmtClient studMgmtClient) {
+                       ResultProcessors resultProcessors, IStudMgmtClient studMgmtClient) {
         this.workdir = workdir;
         this.analysisCapabilities = analysisCapabilities;
         this.dataCollectors = dataCollectors;
+        this.resultProcessors = resultProcessors;
         this.studMgmtClient = studMgmtClient;
     }
 
@@ -38,7 +42,7 @@ public class JacatWorker extends AbstractJacatWorker {
     }
 
     @Override
-    public void registerAnalysisTask(Addon addon, AbstractAnalysisCapability capability) {
+    public void registerAnalysisCapability(Addon addon, AbstractAnalysisCapability capability) {
         for (String language : capability.getLanguages()) {
             if (this.analysisCapabilities.isRegistered(capability.getSlug(), language)) {
                 throw new AnalysisCapabilityAlreadyRegisteredException(
@@ -58,6 +62,14 @@ public class JacatWorker extends AbstractJacatWorker {
         }
 
         this.dataCollectors.register(addon, collector);
+    }
+
+    @Override
+    public void registerResultProcessor(Addon addon, AbstractResultProcessor processor) {
+        if (this.resultProcessors.isRegistered(processor)) {
+
+        }
+        this.resultProcessors.register(processor);
     }
 
     public IStudMgmtClient getStudMgmtClient() {
@@ -94,6 +106,18 @@ public class JacatWorker extends AbstractJacatWorker {
                 "The desired data collector (protocol=\"" +
                     protocol +
                     "\") is already registered."
+            );
+        }
+    }
+
+    private static class ResultProcessorAlreadyRegisteredException
+        extends RuntimeException {
+
+        public ResultProcessorAlreadyRegisteredException(Addon addon) {
+            super(
+                "The desired result processor (by: "
+                    + addon.getDescription().getName()
+                    + ") is already registered."
             );
         }
     }

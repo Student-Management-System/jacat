@@ -3,6 +3,7 @@ package net.ssehub.jacat.api;
 import net.ssehub.jacat.api.addon.Addon;
 import net.ssehub.jacat.api.addon.analysis.AbstractAnalysisCapability;
 import net.ssehub.jacat.api.addon.data.AbstractDataCollector;
+import net.ssehub.jacat.api.addon.result.AbstractResultProcessor;
 import net.ssehub.jacat.api.studmgmt.IStudMgmtClient;
 
 import java.nio.file.Path;
@@ -26,11 +27,8 @@ public abstract class AbstractJacatWorker {
     public abstract String getVersion();
 
     /**
-     * Hiermit kann ein Analyse Task registriert werden. Es ist
-     * nicht vorgesehen, dass ein Addon mehrere Analysetasks
-     * registriert. Daher muss sichergestellt werden, dass die
-     * AnalyseFähigkeit (AnalysisCapability) die gewünschte
-     * Analyse vollständig abdecken kann.
+     * Diese Methode registriert ein Addon mit einer
+     * Analysefähigkeit.
      *
      * @param addon      Muss das laufende Addon sein
      * @param capability Beschreibt die Fähigkeit, die eine
@@ -38,7 +36,7 @@ public abstract class AbstractJacatWorker {
      *                   ansteht, wird ein entsprechendes
      *                   Addon dafür benachrichtigt.
      */
-    public abstract void registerAnalysisTask(
+    public abstract void registerAnalysisCapability(
         Addon addon,
         AbstractAnalysisCapability capability
     );
@@ -46,6 +44,11 @@ public abstract class AbstractJacatWorker {
     public abstract void registerDataCollector(
         Addon addon,
         AbstractDataCollector collector
+    );
+
+    public abstract void registerResultProcessor(
+        Addon addon,
+        AbstractResultProcessor processor
     );
 
     public abstract IStudMgmtClient getStudMgmtClient();
