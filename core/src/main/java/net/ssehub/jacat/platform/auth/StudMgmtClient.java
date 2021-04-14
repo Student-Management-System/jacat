@@ -4,6 +4,8 @@ import net.ssehub.studentmgmt.backend_api.ApiClient;
 import net.ssehub.studentmgmt.backend_api.ApiException;
 import net.ssehub.studentmgmt.backend_api.api.AssignmentsApi;
 import net.ssehub.studentmgmt.backend_api.api.AuthenticationApi;
+import net.ssehub.studentmgmt.backend_api.api.GroupsApi;
+import net.ssehub.studentmgmt.backend_api.api.UsersApi;
 import net.ssehub.studentmgmt.backend_api.model.AuthSystemCredentials;
 import net.ssehub.studentmgmt.backend_api.model.AuthTokenDto;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,6 +25,14 @@ public class StudMgmtClient {
 
     public AssignmentsApi getAssignmentsApi() throws ApiException {
         return new AssignmentsApi(getApiClient());
+    }
+
+    public GroupsApi getGroupsApi() throws ApiException {
+        return new GroupsApi(getApiClient());
+    }
+
+    public UsersApi getUsersApi() throws ApiException {
+        return new UsersApi(getApiClient());
     }
 
     private ApiClient getApiClient() throws ApiException {

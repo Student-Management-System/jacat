@@ -20,7 +20,7 @@ class AddonClassLoaderTest {
                 AddonClassLoader addonClassLoader = new AddonClassLoader(
                     getTestAddonJar(),
                     new AddonDescription("net.ssehub.test.addon.Functional", "TestAddon"),
-                    new JacatWorker(Path.of("."), null, null),
+                    new JacatWorker(Path.of("."), null, null, null),
                     this.getClass().getClassLoader()
                 );
 
@@ -40,7 +40,7 @@ class AddonClassLoaderTest {
                         "net.ssehub.test.addon.NonFunctional",
                         "TestAddon"
                     ),
-                    new JacatWorker(Path.of("./"), null, null),
+                    new JacatWorker(Path.of("./"), null, null, null),
                     this.getClass().getClassLoader()
                 );
             }
