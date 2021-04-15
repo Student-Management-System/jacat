@@ -26,7 +26,7 @@ courses:
           state: IN_REVIEW
         analysis: "pp1plag"
         defaultParams:
-          similarityThreshold: 100.0
+          similarityThreshold: 50.0
   - course: c++
     protocol: local
     language: c++

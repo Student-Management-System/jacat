@@ -53,7 +53,7 @@ public class JPlagAnalyzer extends AbstractAnalysisCapability {
             processBuilder.redirectErrorStream(true);
             Process p = processBuilder.start();
 
-            List<Result> similarities = new ArrayList<>();
+            List<Similarity> similarities = new ArrayList<>();
             Pattern pattern = Pattern.compile(REGEX);
 
             try (BufferedReader input = new BufferedReader(new InputStreamReader(p.getInputStream()))) {
@@ -68,7 +68,7 @@ public class JPlagAnalyzer extends AbstractAnalysisCapability {
 
                         double sim = Double.parseDouble(matcher.group(3));
                         if (sim >= minSim) {
-                            Result result = new Result(from.getSubmission());
+                            Similarity result = new Similarity(from.getSubmission());
                             if (!similarities.contains(result)) {
                                 similarities.add(result);
                             }

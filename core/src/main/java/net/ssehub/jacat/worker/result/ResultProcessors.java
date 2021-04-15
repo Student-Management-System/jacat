@@ -1,11 +1,11 @@
 package net.ssehub.jacat.worker.result;
 
 import net.ssehub.jacat.api.addon.result.AbstractResultProcessor;
+import net.ssehub.jacat.api.addon.task.Task;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @Component
 public class ResultProcessors {
@@ -16,8 +16,8 @@ public class ResultProcessors {
         this.processors.add(processor);
     }
 
-    public void process(Map<String, Object> result) {
-        processors.forEach(processor -> processor.process(result));
+    public void process(Task task) {
+        processors.forEach(processor -> processor.process(task));
     }
 
     public boolean isRegistered(AbstractResultProcessor processor) {

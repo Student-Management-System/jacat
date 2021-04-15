@@ -1,9 +1,9 @@
 package net.ssehub.jacat.api.addon.result;
 
-import java.util.Map;
+import net.ssehub.jacat.api.addon.task.Task;
 
 public abstract class AbstractResultProcessor {
 
-    public abstract void process(Map<String, Object> result);
+    public abstract void process(Task task);
 
 }

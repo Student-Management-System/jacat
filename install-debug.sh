@@ -7,6 +7,7 @@ mkdir -p debug/workspace
 
 cp jpplag-addon/target/jpplag-addon-*.jar debug/addons/jpplag.jar
 cp svn-datacollector/target/svn-datacollector-*.jar debug/addons/svn-datacollector.jar
+cp pa-resultprocessor/target/pa-resultprocessor-*.jar debug/addons/pa-resultprocessor.jar
 cp core/target/core.jar debug/jacat.jar
 cp test-addons/target/test-addons.jar core/src/test/resources/addons/test-addons.jar
 

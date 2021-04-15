@@ -80,14 +80,15 @@ public class AnalysisTaskExecutor implements IAnalysisTaskExecutor {
         log.debug("Scrapping Task (#" + task.getId() + ")");
         this.taskScrapper.scrap(preparedTask);
 
-        this.resultProcessors.process(result.getResult());
-
         Task.Status status = result.getStatus();
         if (status == null) {
             status = Task.Status.SUCCESSFUL;
         }
 
         task.setResult(status, result.getResult());
+
+        this.resultProcessors.process(task);
+
         long timeEnd = System.currentTimeMillis();
         long time = timeEnd - timeStart;
 

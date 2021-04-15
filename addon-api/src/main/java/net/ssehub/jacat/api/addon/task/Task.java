@@ -2,6 +2,7 @@ package net.ssehub.jacat.api.addon.task;
 
 import net.ssehub.jacat.api.addon.data.DataProcessingRequest;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -15,6 +16,8 @@ public class Task {
     private Map<String, Object> request;
 
     private Map<String, Object> result;
+
+    private List<String> proccessedBy;
 
     public Task() {
     }

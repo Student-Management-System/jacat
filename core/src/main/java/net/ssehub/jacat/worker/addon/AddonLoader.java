@@ -76,7 +76,7 @@ public class AddonLoader {
                 new AddonClassLoader(file,
                     addonDescription,
                     this.jacatPlatform,
-                    this.getClass().getClassLoader());
+                    getClass().getClassLoader());
             this.loadedAddons.add(addonClassLoader.getLoadedAddon());
         } catch (AddonNotLoadableException | MalformedURLException e) {
             log.error(

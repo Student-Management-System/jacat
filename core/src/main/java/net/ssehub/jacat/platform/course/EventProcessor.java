@@ -31,8 +31,6 @@ public class EventProcessor {
                 .getAssignmentById(course.getCourse(), assignmentId)
                 .getName();
 
-            System.out.println("homework = " + homework);
-
             CreateAnalysisDto createAnalysis = new CreateAnalysisDto();
             createAnalysis.setData(new DataProcessingRequest(
                 course.getProtocol(),

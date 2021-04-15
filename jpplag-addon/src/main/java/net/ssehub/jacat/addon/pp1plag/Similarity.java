@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class Result {
+public class Similarity {
 
     private String from;
     private List<To> to = new ArrayList<>();
 
-    public Result(String from) {
+    public Similarity(String from) {
         this.from = from;
     }
 
@@ -34,10 +34,18 @@ public class Result {
     }
 
     @Override
+    public String toString() {
+        return "Similarity{" +
+            "from='" + from + '\'' +
+            ", to=" + to +
+            '}';
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Result result = (Result) o;
+        Similarity result = (Similarity) o;
         return from.equals(result.from);
     }
 
@@ -70,6 +78,31 @@ public class Result {
 
         public void setSimilarity(Double similarity) {
             this.similarity = similarity;
+        }
+
+        @Override
+        public String toString() {
+            return "To{" +
+                "submission='" + submission + '\'' +
+                ", similarity=" + similarity +
+                '}';
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
+            To to = (To) o;
+            return submission.equalsIgnoreCase(to.submission);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(submission);
         }
     }
 
