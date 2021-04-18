@@ -5,6 +5,7 @@ import net.ssehub.jacat.api.addon.analysis.AbstractAnalysisCapability;
 import net.ssehub.jacat.api.addon.data.AbstractDataCollector;
 import net.ssehub.jacat.api.addon.result.AbstractResultProcessor;
 import net.ssehub.jacat.api.studmgmt.IStudMgmtClient;
+import net.ssehub.jacat.api.studmgmt.IStudMgmtFacade;
 
 import java.nio.file.Path;
 
@@ -20,9 +21,9 @@ import java.nio.file.Path;
 public abstract class AbstractJacatWorker {
 
     /**
-     * Gibt die Aktuelle Version der Plattform zurück.
+     * Gibt die aktuelle Version des Workers zurück.
      *
-     * @return Version, mit der die Plattform läuft
+     * @return Version, mit der der Worker läuft
      */
     public abstract String getVersion();
 
@@ -53,5 +54,8 @@ public abstract class AbstractJacatWorker {
 
     public abstract IStudMgmtClient getStudMgmtClient();
 
+    public abstract IStudMgmtFacade getStudMgmtFacade();
+
     public abstract Path getWorkingDir();
+
 }

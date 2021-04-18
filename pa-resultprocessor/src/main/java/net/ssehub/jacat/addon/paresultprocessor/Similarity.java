@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 public class Similarity {
 
@@ -34,8 +35,22 @@ public class Similarity {
         this.to = to;
     }
 
+    public Optional<To> findInTo(String submission) {
+        return this.getTo().stream()
+            .filter(toSim -> toSim.getSubmission().equalsIgnoreCase(submission))
+            .findFirst();
+    }
+
     public void add(String to, Double similarity) {
+        if (findInTo(to).isPresent()) {
+            return;
+        }
+
         this.to.add(new To(to, similarity));
+    }
+
+    public void addAll(List<Similarity.To> tos) {
+        this.to.addAll(tos);
     }
 
     public String getFrom() {
@@ -56,9 +71,9 @@ public class Similarity {
 
     @Override
     public String toString() {
-        return "Similarity{" +
-            "from='" + from + '\'' +
-            ", to=" + to +
+        return "Similarity{\n" +
+            "   from='" + from + '\'' + "\n" +
+            "   , to=" + to + "\n" +
             '}';
     }
 
@@ -106,9 +121,9 @@ public class Similarity {
 
         @Override
         public String toString() {
-            return "To{" +
-                "submission='" + submission + '\'' +
-                ", similarity=" + similarity +
+            return "To{\n" +
+                "        submission='" + submission + '\'' + "\n" +
+                "        , similarity=" + similarity + "\n" +
                 '}';
         }
 

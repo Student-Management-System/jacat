@@ -8,6 +8,7 @@ import net.ssehub.jacat.api.addon.data.AbstractDataCollector;
 import net.ssehub.jacat.api.addon.result.AbstractResultProcessor;
 import net.ssehub.jacat.api.analysis.IAnalysisCapabilities;
 import net.ssehub.jacat.api.studmgmt.IStudMgmtClient;
+import net.ssehub.jacat.api.studmgmt.IStudMgmtFacade;
 import net.ssehub.jacat.worker.data.DataCollectors;
 import net.ssehub.jacat.worker.result.ResultProcessors;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -25,16 +26,19 @@ public class JacatWorker extends AbstractJacatWorker {
     private Path workdir;
 
     private final IStudMgmtClient studMgmtClient;
+    private final IStudMgmtFacade studMgmtFacade;
 
     public JacatWorker(@Qualifier("workdir") Path workdir,
                        IAnalysisCapabilities analysisCapabilities,
                        DataCollectors dataCollectors,
-                       ResultProcessors resultProcessors, IStudMgmtClient studMgmtClient) {
+                       ResultProcessors resultProcessors, IStudMgmtClient studMgmtClient,
+                       IStudMgmtFacade studMgmtFacade) {
         this.workdir = workdir;
         this.analysisCapabilities = analysisCapabilities;
         this.dataCollectors = dataCollectors;
         this.resultProcessors = resultProcessors;
         this.studMgmtClient = studMgmtClient;
+        this.studMgmtFacade = studMgmtFacade;
     }
 
     public String getVersion() {
@@ -74,6 +78,11 @@ public class JacatWorker extends AbstractJacatWorker {
 
     public IStudMgmtClient getStudMgmtClient() {
         return studMgmtClient;
+    }
+
+    @Override
+    public IStudMgmtFacade getStudMgmtFacade() {
+        return this.studMgmtFacade;
     }
 
     @Override

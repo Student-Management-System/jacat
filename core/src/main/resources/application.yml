@@ -19,6 +19,9 @@ student-mgmt:
 courses:
   - course: java-wise1920
     protocol: svn-java
+    dataCollector:
+      protocol: svn-java
+      repository: java1
     language: java
     listeners:
       - event: ASSIGNMENT_STATE_CHANGED
