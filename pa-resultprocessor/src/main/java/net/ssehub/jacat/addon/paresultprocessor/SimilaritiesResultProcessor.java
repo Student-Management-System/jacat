@@ -4,7 +4,7 @@ import net.ssehub.jacat.api.addon.data.DataProcessingRequest;
 import net.ssehub.jacat.api.addon.result.AbstractResultProcessor;
 import net.ssehub.jacat.api.addon.task.Task;
 import net.ssehub.jacat.api.studmgmt.IStudMgmtFacade;
-import net.ssehub.studentmgmt.backend_api.model.AssessmentDto;
+import net.ssehub.jacat.api.studmgmt.PAUpdateStrategy;
 import net.ssehub.studentmgmt.backend_api.model.PartialAssessmentDto;
 
 import java.util.*;
@@ -29,6 +29,14 @@ public class SimilaritiesResultProcessor extends AbstractResultProcessor {
             || !result.containsKey("similarities")
             || !(result.get("similarities") instanceof List)) {
             return;
+        }
+
+        PAUpdateStrategy updateStrategy = PAUpdateStrategy.KEEP;
+
+        try {
+            updateStrategy = PAUpdateStrategy.valueOf((String) task.getRequest().get("paUpdateStrategy"));
+        } catch (Exception e) {
+            // Ignore, just keep the default: PAUpdateStrategy.KEEP
         }
 
         List<Similarity> similarities = getSimilaritiesFromResults(result);
@@ -58,10 +66,11 @@ public class SimilaritiesResultProcessor extends AbstractResultProcessor {
                     .comment(getCommentFromSimilarity(s.getValue())))
             );
 
-        this.studMgmtFacade.updatePartialAssessments(
+        this.studMgmtFacade.addPartialAssessments(
             taskConfig.getCourse(),
             taskConfig.getHomework(),
-            partialAssessments
+            partialAssessments,
+            updateStrategy
         );
 
     }

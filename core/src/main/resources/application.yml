@@ -30,6 +30,7 @@ courses:
         analysis: "pp1plag"
         defaultParams:
           similarityThreshold: 50.0
+          paUpdateStrategy: UPDATE
   - course: c++
     protocol: local
     language: c++

@@ -1,6 +1,5 @@
 package net.ssehub.jacat.api.studmgmt;
 
-import net.ssehub.studentmgmt.backend_api.ApiException;
 import net.ssehub.studentmgmt.backend_api.model.AssessmentDto;
 import net.ssehub.studentmgmt.backend_api.model.AssignmentDto;
 import net.ssehub.studentmgmt.backend_api.model.PartialAssessmentDto;
@@ -14,6 +13,11 @@ public interface IStudMgmtFacade {
     boolean updatePartialAssessments(String courseId,
                                      String assignmentName,
                                      Map<String, PartialAssessmentDto> partialAssessments);
+
+    boolean addPartialAssessments(String courseId,
+                                  String assignmentName,
+                                  Map<String, PartialAssessmentDto> partialAssessments,
+                                  PAUpdateStrategy paUpdateStrategy);
 
     Optional<AssignmentDto> getAssignment(String courseId, String assignmentName);
 

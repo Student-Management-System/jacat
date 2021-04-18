@@ -3,6 +3,7 @@ package net.ssehub.jacat.worker.result;
 import lombok.extern.slf4j.Slf4j;
 import net.ssehub.jacat.api.studmgmt.IStudMgmtFacade;
 import net.ssehub.jacat.api.studmgmt.IStudMgmtClient;
+import net.ssehub.jacat.api.studmgmt.PAUpdateStrategy;
 import net.ssehub.studentmgmt.backend_api.ApiException;
 import net.ssehub.studentmgmt.backend_api.api.AssessmentsApi;
 import net.ssehub.studentmgmt.backend_api.api.AssignmentsApi;
@@ -29,19 +30,26 @@ public class StudMgmtFacade implements IStudMgmtFacade {
     public boolean updatePartialAssessments(String courseId,
                                             String assignmentName,
                                             Map<String, PartialAssessmentDto> partialAssessments) {
+        return addPartialAssessments(courseId, assignmentName, partialAssessments, PAUpdateStrategy.UPDATE);
+    }
+
+    @Override
+    public boolean addPartialAssessments(String courseId, String assignmentName,
+                                         Map<String, PartialAssessmentDto> partialAssessments,
+                                         PAUpdateStrategy paUpdateStrategy) {
         try {
             AssessmentsApi assessmentsApi = this.studMgmtClient.getAssessmentsApi();
 
             List<PartialAssessmentDto> newPAs = this.addAssignmentToPA(courseId, assignmentName, partialAssessments);
 
-
             for (PartialAssessmentDto newPA : newPAs) {
-
-                List<PartialAssessmentDto> deletePAs = this.getOldPAsWithSameTitle(courseId, assignmentName, newPA);
-
                 AssessmentUpdateDto updateAssessment = new AssessmentUpdateDto();
                 updateAssessment.setAddPartialAssessments(Collections.singletonList(newPA));
-                updateAssessment.setRemovePartialAssignments(deletePAs);
+
+                if (paUpdateStrategy.equals(PAUpdateStrategy.UPDATE)) {
+                    List<PartialAssessmentDto> deletePAs = this.getOldPAsWithSameTitle(courseId, assignmentName, newPA);
+                    updateAssessment.setRemovePartialAssignments(deletePAs);
+                }
 
                 assessmentsApi.updateAssessment(updateAssessment,
                     courseId,
