@@ -28,8 +28,11 @@ when a submission should be considered as plagiarism.
 
 |     Parameter Name     |  Possible Values  | Default | Description                                                               |
 |------------------------|-------------------|---------|---------------------------------------------------------------------------|
-| `similarityThreshold`  | `0.00` - `100.00` | `50.00` | Sets the threshold below which legitimate submissions should be truncated |
+| `similarityThreshold`  | `0.00` - `100.00` | `NONE` | Sets the threshold below which legitimate submissions should be truncated |
 | `classDeviation`       | `0` - `9`         | `NONE`  | Submissions whose similarity is below or within the average class + classDeviation will not be considered as plagiarism. |
+| `paUpdateStrategy`     | `UPDATE`, `KEEP`  | `KEEP`  | Update: removes old PartialAssessments created before and adds new ones; Keep: Does not remove old PartialAssessments and adds new ones |
+
+This addon wont add PartialAssessments if none of `similarityThreshold` or `classDeviation` is provided.
 
 (latter one is not implemented at the moment)
 
@@ -59,5 +62,5 @@ use both parameters in connection, these would be linked with an OR.
 
 This addon can currently post-process the results of a similarity measurement. 
 Therefore, it runs on the results of
-[JJPlag](https://github.com/Student-Management-System/jacat/tree/main/jpplag-addon).
+[JPPlag](https://github.com/Student-Management-System/jacat/tree/main/jpplag-addon).
 
