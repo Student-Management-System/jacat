@@ -32,12 +32,6 @@ public class JPlagAnalyzer extends AbstractAnalysisCapability {
     public FinishedTask run(PreparedTask task) {
         Path workspace = task.getWorkspace();
         SubmissionCollection submissions = task.getSubmissions();
-        Map<String, Object> request = task.getRequest();
-
-        double minSim = 50.0;
-        if (request.containsKey("similarityThreshold")) {
-            minSim = (double) request.get("similarityThreshold");
-        }
 
         try {
             Path jplag = this.workdir.resolve(JPLAG_JAR);
@@ -61,21 +55,21 @@ public class JPlagAnalyzer extends AbstractAnalysisCapability {
 
                 while ((line = input.readLine()) != null) {
                     Matcher matcher = pattern.matcher(line);
-//                    System.out.println(line);
+                    // System.out.println(line);
                     if (matcher.matches()) {
                         Submission from = submissions.getSubmission(matcher.group(1)).get();
                         Submission to = submissions.getSubmission(matcher.group(2)).get();
 
                         double sim = Double.parseDouble(matcher.group(3));
-                        if (sim >= minSim) {
-                            Similarity result = new Similarity(from.getSubmission());
-                            if (!similarities.contains(result)) {
-                                similarities.add(result);
-                            }
 
-                            similarities.get(similarities.indexOf(result))
-                                .add(to.getSubmission(), sim);
+                        Similarity result = new Similarity(from.getSubmission());
+                        if (!similarities.contains(result)) {
+                            similarities.add(result);
                         }
+
+                        similarities.get(similarities.indexOf(result))
+                            .add(to.getSubmission(), sim);
+
                     }
                 }
             }
