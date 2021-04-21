@@ -40,7 +40,7 @@ public class StudMgmtFacade implements IStudMgmtFacade {
         try {
             AssessmentsApi assessmentsApi = this.studMgmtClient.getAssessmentsApi();
 
-            List<PartialAssessmentDto> newPAs = this.addAssignmentToPA(courseId, assignmentName, partialAssessments);
+            List<PartialAssessmentDto> newPAs = this.addAssessmentToPA(courseId, assignmentName, partialAssessments);
 
             for (PartialAssessmentDto newPA : newPAs) {
                 AssessmentUpdateDto updateAssessment = new AssessmentUpdateDto();
@@ -137,7 +137,7 @@ public class StudMgmtFacade implements IStudMgmtFacade {
         return Collections.emptyList();
     }
 
-    private List<PartialAssessmentDto> addAssignmentToPA(String courseId,
+    private List<PartialAssessmentDto> addAssessmentToPA(String courseId,
                                                          String assignmentName,
                                                          Map<String, PartialAssessmentDto> partialAssessments) {
         return partialAssessments.keySet().stream().map(groupOrUsername -> {
@@ -148,6 +148,6 @@ public class StudMgmtFacade implements IStudMgmtFacade {
                 return pa;
             }
             return null;
-        }).collect(Collectors.toList());
+        }).filter(Objects::nonNull).collect(Collectors.toList());
     }
 }

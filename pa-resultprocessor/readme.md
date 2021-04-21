@@ -32,9 +32,7 @@ when a submission should be considered as plagiarism.
 | `classDeviation`       | `0` - `9`         | `NONE`  | Submissions whose similarity is below or within the average class + classDeviation will not be considered as plagiarism. |
 | `paUpdateStrategy`     | `UPDATE`, `KEEP`  | `KEEP`  | Update: removes old PartialAssessments created before and adds new ones; Keep: Does not remove old PartialAssessments and adds new ones |
 
-This addon wont add PartialAssessments if none of `similarityThreshold` or `classDeviation` is provided.
-
-(latter one is not implemented at the moment)
+This addon won't add PartialAssessments if none of `similarityThreshold` or `classDeviation` is provided.
 
 _Example_:
 

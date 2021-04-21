@@ -35,6 +35,10 @@ public class Similarity {
         this.to = to;
     }
 
+    public boolean hasOneWithMoreThan(double percentage) {
+        return this.getTo().stream().anyMatch(to -> to.getSimilarity() > percentage);
+    }
+
     public Optional<To> findInTo(String submission) {
         return this.getTo().stream()
             .filter(toSim -> toSim.getSubmission().equalsIgnoreCase(submission))

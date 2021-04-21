@@ -31,14 +31,7 @@ public class SimilaritiesResultProcessor extends AbstractResultProcessor {
             return;
         }
 
-        PAUpdateStrategy updateStrategy = PAUpdateStrategy.KEEP;
-
-        try {
-            updateStrategy = PAUpdateStrategy.valueOf((String) task.getRequest().get("paUpdateStrategy"));
-        } catch (Exception e) {
-            // Ignore, just keep the default: PAUpdateStrategy.KEEP
-        }
-
+        PAUpdateStrategy updateStrategy = getPaUpdateStrategy(task.getRequest());
         List<Similarity> similarities = getSimilaritiesFromResults(result);
 
         Map<String, Similarity> processedSims = new HashMap<>();
@@ -57,13 +50,20 @@ public class SimilaritiesResultProcessor extends AbstractResultProcessor {
             }
         }
 
+        double similarityThreshold = getSimilarityThreshold(task.getRequest());
+        int classDeviation = getClassDeviation(task.getRequest());
+
+        double threshold = calculateThreshold(similarityThreshold, classDeviation, similarities);
+
+
         Map<String, PartialAssessmentDto> partialAssessments = processedSims.entrySet().stream()
+            .filter(entry -> entry.getValue().hasOneWithMoreThan(threshold))
             .collect(Collectors.toMap(
                 Map.Entry::getKey,
                 s -> new PartialAssessmentDto()
                     .title(PARTIAL_ASSESSMENT_TITLE)
                     .severity(PartialAssessmentDto.SeverityEnum.WARNING)
-                    .comment(getCommentFromSimilarity(s.getValue())))
+                    .comment(getCommentFromSimilarity(s.getValue(), threshold)))
             );
 
         this.studMgmtFacade.addPartialAssessments(
@@ -75,9 +75,64 @@ public class SimilaritiesResultProcessor extends AbstractResultProcessor {
 
     }
 
-    private String getCommentFromSimilarity(Similarity sim) {
+    private double getSimilarityThreshold(Map<String, Object> request) {
+        double similarityThreshold = -1.0;
+
+        try {
+            similarityThreshold = (double) request.get("similarityThreshold");
+        } catch (Exception e) {
+
+        }
+        return similarityThreshold;
+    }
+
+    private int getClassDeviation(Map<String, Object> request) {
+        int classDeviation = -1;
+        try {
+            classDeviation = (int) request.get("classDeviation");
+        } catch (Exception e) {
+
+        }
+        return classDeviation;
+    }
+
+    private double calculateThreshold(double similarityThreshold,
+                                      int classDeviation,
+                                      Collection<Similarity> values) {
+        double deviationThreshold = 100.0;
+        if (classDeviation >= 0) {
+            double total = 0;
+            int count = 0;
+            for (Similarity similarity : values) {
+                total += similarity.getTo().stream().mapToDouble(Similarity.To::getSimilarity).sum();
+                count += similarity.getTo().size();
+            }
+            double mean = total/count;
+            int clazz =  (((int) mean)/10) + classDeviation;
+            deviationThreshold = clazz * 10;
+        }
+
+        if (similarityThreshold < 0) {
+            similarityThreshold = 101.00;
+        }
+        return Math.min(deviationThreshold, similarityThreshold);
+    }
+
+    private PAUpdateStrategy getPaUpdateStrategy(Map<String, Object> request) {
+        PAUpdateStrategy updateStrategy = PAUpdateStrategy.KEEP;
+
+        try {
+            updateStrategy = PAUpdateStrategy.valueOf((String) request.get("paUpdateStrategy"));
+        } catch (Exception e) {
+            // Ignore, just keep the default: PAUpdateStrategy.KEEP
+        }
+        return updateStrategy;
+    }
+
+    private String getCommentFromSimilarity(Similarity sim, double threshold) {
         String from = sim.getFrom();
         String sims = sim.getTo().stream()
+            .filter(to -> to.getSimilarity() > threshold)
             .map(to -> to.getSubmission() + " (" + (int) Math.round(to.getSimilarity()) + "%)")
             .collect(Collectors.joining(", "));
 
