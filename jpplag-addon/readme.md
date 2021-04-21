@@ -44,6 +44,7 @@ when a submission should be considered as plagiarism.
 |------------------------|-------------------|---------|---------------------------------------------------------------------------|
 | `similarityThreshold`  | `0.00` - `100.00` | `50.00` | Sets the threshold below which legitimate submissions should be truncated |
 | `classDeviation`       | `0` - `9`         | `NONE`  | Submissions whose similarity is below or within the average class + classDeviation will not be considered as plagiarism. |
+
 (later is not implement at the moment)
 
 _Example_:
@@ -55,18 +56,18 @@ In the last column you can see that the classes 10 - 6 are considered
 as plagiarism.  If one would use both parameters in connection, these 
 would be linked with an OR.
 
- #  | Similarity Class | Submissions | Considered as Plagiarism? |
-----|------------------|-------------|---------------------------|
- 10 | 90 - 100%        | 1           | x                         |
- 9  | 80 - 90%         | 0           | x                         | 
- 8  | 70 - 80%         | 1           | x                         | 
- 7  | 60 - 70%         | 0           | x                         | 
- 6  | 50 - 60%         | 1           | x                         | 
- 5  | 40 - 50%         | 1           |                           | 
- 4  | 30 - 40%         | 5           |                           | 
- 3  | 20 - 30%         | 20          |                           | 
- 2  | 10 - 20%         | 400         |                           | 
- 1  |  0 - 10%         | 1200        |                           | 
+| #  | Similarity Class | Submissions | Considered as Plagiarism? |
+|----|------------------|-------------|---------------------------|
+| 10 | 90 - 100%        | 1           | x                         |
+| 9  | 80 - 90%         | 0           | x                         | 
+| 8  | 70 - 80%         | 1           | x                         | 
+| 7  | 60 - 70%         | 0           | x                         | 
+| 6  | 50 - 60%         | 1           | x                         | 
+| 5  | 40 - 50%         | 1           |                           | 
+| 4  | 30 - 40%         | 5           |                           | 
+| 3  | 20 - 30%         | 20          |                           | 
+| 2  | 10 - 20%         | 400         |                           | 
+| 1  |  0 - 10%         | 1200        |                           | 
 
 ## Related Addons
 
