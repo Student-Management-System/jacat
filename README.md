@@ -64,11 +64,11 @@ To get a local copy up and running follow these simple steps.
 
 ## Available Addons
 
-### JJPlag
+### JPPlag
 
 This addon can compare submissions and determine if certain things within the submission 
 are similar. Usage and installation is documented under: 
-[JJPlag](https://github.com/Student-Management-System/jacat/tree/main/jpplag-addon)
+[JPPlag](https://github.com/Student-Management-System/jacat/tree/main/jpplag-addon)
 
 ### PA-ResultProcessor
 
