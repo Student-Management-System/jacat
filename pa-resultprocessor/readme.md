@@ -28,7 +28,7 @@ when a submission should be considered as plagiarism.
 
 |     Parameter Name     |  Possible Values  | Default | Description                                                               |
 |------------------------|-------------------|---------|---------------------------------------------------------------------------|
-| `similarityThreshold`  | `0.00` - `100.00` | `NONE` | Sets the threshold below which legitimate submissions should be truncated |
+| `similarityThreshold`  | `0.00` - `100.00` | `NONE`  | Sets the threshold below which legitimate submissions should be truncated |
 | `classDeviation`       | `0` - `9`         | `NONE`  | Submissions whose similarity is below or within the average class + classDeviation will not be considered as plagiarism. |
 | `paUpdateStrategy`     | `UPDATE`, `KEEP`  | `KEEP`  | Update: removes old PartialAssessments created before and adds new ones; Keep: Does not remove old PartialAssessments and adds new ones |
 

@@ -69,7 +69,7 @@ example of such an output:
       ]
     },
     {
-      "from": "jp01",
+      "from": "jp03",
       "to": [
         {
           "submission": "jp02",
