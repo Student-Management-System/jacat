@@ -62,6 +62,20 @@ To get a local copy up and running follow these simple steps.
 
 ### Installation
 
+## Available Addons
+
+### JJPlag
+
+This addon can compare submissions and determine if certain things within the submission 
+are similar. Usage and installation is documented under: 
+[JJPlag](https://github.com/Student-Management-System/jacat/blob/main/jjplag-addon/readme)
+
+### PA-ResultProcessor
+
+This addon post-processes the result of an analysis and converts similarities into 
+'PartialAssessments'.  These are made available to the Student-Management-System and
+automatically attached to an assessment.
+
 <!-- USAGE EXAMPLES -->
 ## Usage
 
