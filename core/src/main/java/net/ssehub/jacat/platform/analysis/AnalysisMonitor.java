@@ -37,7 +37,8 @@ public class AnalysisMonitor {
                 analysisTask.getStatus(),
                 analysisTask.getDataProcessingRequest(),
                 analysisTask.getRequest(),
-                analysisTask.getResult())
+                analysisTask.getResult(),
+                analysisTask.getMode())
             )
             .filter(taskExecutor::isRunning)
             .filter(task -> capabilities.isRegistered(

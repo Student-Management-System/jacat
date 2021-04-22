@@ -11,6 +11,8 @@ public class Task {
 
     private Status status;
 
+    private TaskMode mode;
+
     private DataProcessingRequest dataProcessingRequest;
 
     private Map<String, Object> request;
@@ -26,12 +28,13 @@ public class Task {
         String id,
         Status status,
         DataProcessingRequest collectRequest,
-        Map<String, Object> request
-    ) {
+        Map<String, Object> request,
+        TaskMode mode) {
         this.id = id;
         this.status = status;
         this.dataProcessingRequest = collectRequest;
         this.request = request;
+        this.mode = mode;
     }
 
     public Task(
@@ -39,13 +42,14 @@ public class Task {
         Status status,
         DataProcessingRequest collectRequest,
         Map<String, Object> request,
-        Map<String, Object> result
-    ) {
+        Map<String, Object> result,
+        TaskMode mode) {
         this.id = id;
         this.status = status;
         this.dataProcessingRequest = collectRequest;
         this.request = request;
         this.result = result;
+        this.mode = mode;
     }
     
     public Status getStatus() {
@@ -79,6 +83,14 @@ public class Task {
 
     public Map<String, Object> getResult() {
         return result;
+    }
+
+    public TaskMode getMode() {
+        return mode;
+    }
+
+    public void setMode(TaskMode mode) {
+        this.mode = mode;
     }
 
     @Override

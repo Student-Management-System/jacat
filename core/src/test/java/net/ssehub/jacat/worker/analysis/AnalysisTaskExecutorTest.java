@@ -5,6 +5,7 @@ import net.ssehub.jacat.api.addon.data.DataProcessingRequest;
 import net.ssehub.jacat.api.addon.task.FinishedTask;
 import net.ssehub.jacat.api.addon.task.PreparedTask;
 import net.ssehub.jacat.api.addon.task.Task;
+import net.ssehub.jacat.api.addon.task.TaskMode;
 import net.ssehub.jacat.api.analysis.IAnalysisCapabilities;
 import net.ssehub.jacat.api.analysis.TaskCompletion;
 import net.ssehub.jacat.worker.result.ResultProcessors;
@@ -69,7 +70,7 @@ class AnalysisTaskExecutorTest {
     @Test
     void process_withSameTask_shouldOnlyProcessOnce() throws InterruptedException {
         TaskCompletion mock = mock(TaskCompletion.class);
-        Task task = new Task(A_TASK_ID, null, A_DATA_PROCESSING_REQUEST, Collections.emptyMap());
+        Task task = new Task(A_TASK_ID, null, A_DATA_PROCESSING_REQUEST, Collections.emptyMap(), TaskMode.ASYNC);
 
         Thread processA = new Thread(() -> uut.process(task, mock));
         Thread processB = new Thread(() -> uut.process(task, mock));
@@ -87,7 +88,7 @@ class AnalysisTaskExecutorTest {
     void process(DataProcessingRequest dpr, Task.Status status) {
         TaskCompletion mock = mock(TaskCompletion.class);
 
-        Task task = new Task(A_TASK_ID, null, dpr, Collections.emptyMap());
+        Task task = new Task(A_TASK_ID, null, dpr, Collections.emptyMap(), TaskMode.ASYNC);
 
         this.uut.process(task, mock);
 

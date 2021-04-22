@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 @Slf4j
@@ -43,9 +44,9 @@ public class AnalysisTaskExecutor implements IAnalysisTaskExecutor {
     }
 
     @Async
-    public void process(Task task, TaskCompletion completion) {
+    public CompletableFuture<Task> process(Task task, TaskCompletion completion) {
         if (this.isRunning(task)) {
-            return;
+            return CompletableFuture.failedFuture(new TaskAlreadyRunningException(task));
         }
         long timeStart = System.currentTimeMillis();
         this.runningTasks.add(task);
@@ -98,5 +99,7 @@ public class AnalysisTaskExecutor implements IAnalysisTaskExecutor {
         log.debug("Currently running tasks: " + this.runningTasks.size());
 
         completion.finish(task);
+
+        return CompletableFuture.completedFuture(task);
     }
 }

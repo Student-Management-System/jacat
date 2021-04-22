@@ -1,6 +1,7 @@
 package net.ssehub.jacat.platform.analysis;
 
 import net.ssehub.jacat.api.addon.data.DataProcessingRequest;
+import net.ssehub.jacat.api.addon.task.TaskMode;
 import net.ssehub.jacat.platform.analysis.api.CreateAnalysisDto;
 import net.ssehub.jacat.platform.analysis.api.ListAnalysisResultDto;
 import net.ssehub.jacat.platform.analysis.exception.AnalysisTaskNotFoundException;
@@ -34,8 +35,10 @@ public class AnalysisController {
 
     @PostMapping
     public ListAnalysisResultDto startAnalysis(@RequestParam("slug") String slug,
+                                               @RequestParam("mode") Optional<TaskMode> modeOptional,
                                                @RequestBody CreateAnalysisDto createAnalysisDto) {
         DataProcessingRequest data = createAnalysisDto.getData();
+        createAnalysisDto.setMode(modeOptional.orElse(TaskMode.SYNC));
         if (data == null) {
             throw new CourseConfigurationNotFoundException();
         }

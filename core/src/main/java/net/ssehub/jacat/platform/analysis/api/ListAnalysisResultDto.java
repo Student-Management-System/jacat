@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import net.ssehub.jacat.api.addon.data.DataProcessingRequest;
+import net.ssehub.jacat.api.addon.task.TaskMode;
 import net.ssehub.jacat.platform.analysis.AnalysisTask;
 
 import java.util.HashMap;
@@ -22,6 +23,8 @@ public class ListAnalysisResultDto {
     private String homework;
     private String submission;
 
+    private TaskMode mode;
+
     private Map<String, Object> request = new HashMap<>();
     private Map<String, Object> result = new HashMap<>();
 
@@ -34,5 +37,6 @@ public class ListAnalysisResultDto {
         this.submission = data.getSubmission();
         this.request = analysisTask.getRequest();
         this.result = analysisTask.getResult();
+        this.mode = analysisTask.getMode();
     }
 }

@@ -1,14 +1,14 @@
 package net.ssehub.jacat.platform.analysis;
 
-import net.ssehub.jacat.api.addon.Addon;
 import net.ssehub.jacat.api.addon.task.Task;
+import net.ssehub.jacat.api.addon.task.TaskMode;
 import net.ssehub.jacat.api.analysis.IAnalysisCapabilities;
 import net.ssehub.jacat.api.analysis.IAnalysisTaskExecutor;
 import net.ssehub.jacat.platform.analysis.api.CreateAnalysisDto;
 import net.ssehub.jacat.platform.analysis.exception.CapabilityNotAvailableException;
 import org.springframework.stereotype.Service;
 
-import java.util.concurrent.RejectedExecutionException;
+import java.util.concurrent.*;
 
 @Service
 public class AnalysisService {
@@ -35,29 +35,40 @@ public class AnalysisService {
 
         AnalysisTask analysisTask = new AnalysisTask(
             request.getData().clone(),
-            request.getRequest()
+            request.getRequest(),
+            request.getMode()
         );
 
         analysisTask = this.repository.save(analysisTask);
-        this.process(analysisTask);
+        Task processedTask = this.process(analysisTask);
 
-        return analysisTask;
+        return this.repository.findById(processedTask.getId()).get();
     }
 
-    public void process(Task analysisTask) {
+    public Task process(Task analysisTask) {
         Task task = new Task(
             analysisTask.getId(),
             analysisTask.getStatus(),
             analysisTask.getDataProcessingRequest().clone(),
-            analysisTask.getRequest()
+            analysisTask.getRequest(),
+            analysisTask.getMode()
         );
 
         try {
-            this.taskExecutor.process(task,
+            CompletableFuture<Task> process = this.taskExecutor.process(task,
                 (finishedTask) -> this.repository.save(new AnalysisTask(finishedTask)));
-        } catch (RejectedExecutionException ex) {
-            // TODO: what to do, if thread pool cant handle a new task?
-        }
 
+            if (analysisTask.getMode().equals(TaskMode.SYNC)) {
+                return process.get(10, TimeUnit.SECONDS); // TODO: Timeout konfigurierbar machen
+            } else if (analysisTask.getMode().equals(TaskMode.ASYNC)) {
+                return task;
+            }
+        } catch (RejectedExecutionException
+            | InterruptedException
+            | ExecutionException
+            | TimeoutException ex) {
+            // Eventuell aufsplitten (vorallem: RejectedExecutionException)
+        }
+        return task;
     }
 }

@@ -7,6 +7,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import net.ssehub.jacat.api.addon.data.DataProcessingRequest;
 import net.ssehub.jacat.api.addon.task.Task;
+import net.ssehub.jacat.api.addon.task.TaskMode;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -26,12 +27,13 @@ public class AnalysisTask extends Task {
             task.getStatus(),
             task.getDataProcessingRequest().clone(),
             task.getRequest(),
-            task.getResult()
+            task.getResult(),
+            task.getMode()
         );
     }
 
-    public AnalysisTask(DataProcessingRequest data, Map<String, Object> request) {
-        super(null, null, data, request);
+    public AnalysisTask(DataProcessingRequest data, Map<String, Object> request, TaskMode mode) {
+        super(null, null, data, request, mode);
     }
 
     @Override

@@ -2,8 +2,10 @@ package net.ssehub.jacat.api.analysis;
 
 import net.ssehub.jacat.api.addon.task.Task;
 
+import java.util.concurrent.CompletableFuture;
+
 public interface IAnalysisTaskExecutor {
     boolean isRunning(Task task);
 
-    void process(Task task, TaskCompletion completion);
+    CompletableFuture<Task> process(Task task, TaskCompletion completion);
 }
