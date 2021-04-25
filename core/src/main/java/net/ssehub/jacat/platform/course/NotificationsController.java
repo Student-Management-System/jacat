@@ -1,12 +1,17 @@
 package net.ssehub.jacat.platform.course;
 
-import net.ssehub.jacat.platform.course.config.CourseConfig;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import net.ssehub.jacat.platform.analysis.api.ListAnalysisResultDto;
 import net.ssehub.jacat.platform.course.config.CoursesConfig;
 import net.ssehub.studentmgmt.backend_api.model.NotificationDto;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v0/courses/notifications")
+@RequestMapping("/api/v0/courses/notification")
 public class NotificationsController {
 
     private final CoursesConfig coursesConfig;
@@ -18,6 +23,11 @@ public class NotificationsController {
         this.eventProcessor = eventProcessor;
     }
 
+    @Operation(summary = "Process a student management system notification")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Notification processed",
+            content = @Content)
+    })
     @PostMapping
     public void receiveNotification(@RequestBody NotificationDto notification) {
         coursesConfig.getCourse(notification.getCourseId()).ifPresent(
