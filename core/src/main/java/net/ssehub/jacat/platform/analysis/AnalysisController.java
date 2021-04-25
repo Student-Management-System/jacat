@@ -15,9 +15,9 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/v0/analysis")
 public class AnalysisController {
-    private AnalysisService analysisService;
-    private AnalysisTaskRepository repository;
-    private CoursesConfig coursesConfig;
+    private final AnalysisService analysisService;
+    private final AnalysisTaskRepository repository;
+    private final CoursesConfig coursesConfig;
 
     public AnalysisController(AnalysisService analysisService,
                               AnalysisTaskRepository repository,
