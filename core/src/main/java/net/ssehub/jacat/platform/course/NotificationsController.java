@@ -10,6 +10,8 @@ import net.ssehub.jacat.platform.course.config.CoursesConfig;
 import net.ssehub.studentmgmt.backend_api.model.NotificationDto;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+
 @RestController
 @RequestMapping("/api/v0/courses/notification")
 public class NotificationsController {
@@ -29,7 +31,11 @@ public class NotificationsController {
             content = @Content)
     })
     @PostMapping
-    public void receiveNotification(@RequestBody NotificationDto notification) {
+    public void receiveNotification(@RequestBody NotificationDto notification, HttpServletRequest request) {
+        System.out.println(request.getRemoteAddr());
+        System.out.println(request.getRemoteUser());
+        System.out.println(request.getRemoteHost());
+
         coursesConfig.getCourse(notification.getCourseId()).ifPresent(
             course -> course.getListeners().stream()
                 .filter(listener -> listener.isListening(notification))

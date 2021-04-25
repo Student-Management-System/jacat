@@ -2,6 +2,7 @@ package net.ssehub.jacat.platform.course;
 
 import lombok.extern.slf4j.Slf4j;
 import net.ssehub.jacat.api.addon.data.DataProcessingRequest;
+import net.ssehub.jacat.api.addon.task.TaskMode;
 import net.ssehub.jacat.platform.analysis.AnalysisService;
 import net.ssehub.jacat.platform.analysis.api.CreateAnalysisDto;
 import net.ssehub.jacat.platform.auth.StudMgmtClient;
@@ -32,6 +33,7 @@ public class EventProcessor {
                 .getName();
 
             CreateAnalysisDto createAnalysis = new CreateAnalysisDto();
+            createAnalysis.setMode(TaskMode.ASYNC);
             createAnalysis.setRequest(event.getDefaultParams());
             DataProcessingRequest dpr = new DataProcessingRequest(
                 course.getProtocol(),

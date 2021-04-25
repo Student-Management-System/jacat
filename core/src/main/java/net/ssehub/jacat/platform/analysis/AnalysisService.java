@@ -59,9 +59,9 @@ public class AnalysisService {
             CompletableFuture<Task> process = this.taskExecutor.process(task,
                 (finishedTask) -> this.repository.save(new AnalysisTask(finishedTask)));
 
-            if (analysisTask.getMode().equals(TaskMode.SYNC)) {
+            if (TaskMode.SYNC.equals(analysisTask.getMode())) {
                 return process.get(10, TimeUnit.SECONDS); // TODO: Timeout konfigurierbar machen
-            } else if (analysisTask.getMode().equals(TaskMode.ASYNC)) {
+            } else {
                 return task;
             }
         } catch (RejectedExecutionException
