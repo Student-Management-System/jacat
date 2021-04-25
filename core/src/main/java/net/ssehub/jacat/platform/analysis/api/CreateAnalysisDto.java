@@ -15,7 +15,8 @@ import java.util.Map;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CreateAnalysisDto {
-    private DataProcessingRequest data;
+
+    private Data data;
 
     @JsonIgnore
     private TaskMode mode;
@@ -25,5 +26,16 @@ public class CreateAnalysisDto {
     @JsonAnySetter
     public void setRequestParameter(String key, Object value) {
         this.request.put(key, value);
+    }
+
+    @lombok.Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class Data {
+
+        private String course;
+        private String homework;
+        private String submission;
+
     }
 }

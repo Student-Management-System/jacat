@@ -32,16 +32,16 @@ public class EventProcessor {
                 .getName();
 
             CreateAnalysisDto createAnalysis = new CreateAnalysisDto();
-            createAnalysis.setData(new DataProcessingRequest(
+            createAnalysis.setRequest(event.getDefaultParams());
+            DataProcessingRequest dpr = new DataProcessingRequest(
                 course.getProtocol(),
                 event.getAnalysis(),
                 course.getLanguage(),
                 course.getCourse(),
                 homework,
-                null));
-            createAnalysis.setRequest(event.getDefaultParams());
+                null);
 
-            this.analysisService.tryProcess(createAnalysis);
+            this.analysisService.tryProcess(createAnalysis, dpr);
         } catch (ApiException e) {
             log.error("Cannot get Assignment: " + assignmentId, e);
         }

@@ -1,5 +1,6 @@
 package net.ssehub.jacat.platform.analysis;
 
+import net.ssehub.jacat.api.addon.data.DataProcessingRequest;
 import net.ssehub.jacat.api.addon.task.Task;
 import net.ssehub.jacat.api.addon.task.TaskMode;
 import net.ssehub.jacat.api.analysis.IAnalysisCapabilities;
@@ -25,16 +26,16 @@ public class AnalysisService {
         this.taskExecutor = taskExecutor;
     }
 
-    public AnalysisTask tryProcess(CreateAnalysisDto request) {
-        String slug = request.getData().getAnalysisSlug();
-        String language = request.getData().getCodeLanguage();
+    public AnalysisTask tryProcess(CreateAnalysisDto request, DataProcessingRequest data) {
+        String slug = data.getAnalysisSlug();
+        String language = data.getCodeLanguage();
 
         if (!capabilities.isRegistered(slug, language)) {
             throw new CapabilityNotAvailableException(slug, language);
         }
 
         AnalysisTask analysisTask = new AnalysisTask(
-            request.getData().clone(),
+            data,
             request.getRequest(),
             request.getMode()
         );

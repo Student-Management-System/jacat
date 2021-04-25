@@ -6,6 +6,6 @@ import org.springframework.http.HttpStatus;
 public class CourseConfigurationNotFoundException extends ApplicationRuntimeException {
 
     public CourseConfigurationNotFoundException() {
-        super("Cannot find course configuration.", HttpStatus.NOT_FOUND);
+        super("Invalid course provided", HttpStatus.BAD_REQUEST);
     }
 }
