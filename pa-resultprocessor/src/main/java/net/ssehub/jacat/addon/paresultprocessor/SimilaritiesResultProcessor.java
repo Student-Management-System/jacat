@@ -4,7 +4,6 @@ import net.ssehub.jacat.api.addon.data.DataProcessingRequest;
 import net.ssehub.jacat.api.addon.result.AbstractResultProcessor;
 import net.ssehub.jacat.api.addon.task.Task;
 import net.ssehub.jacat.api.studmgmt.IStudMgmtFacade;
-import net.ssehub.jacat.api.studmgmt.PAUpdateStrategy;
 import net.ssehub.studentmgmt.backend_api.model.PartialAssessmentDto;
 
 import java.util.*;
@@ -31,7 +30,6 @@ public class SimilaritiesResultProcessor extends AbstractResultProcessor {
             return;
         }
 
-        PAUpdateStrategy updateStrategy = getPaUpdateStrategy(task.getRequest());
         List<Similarity> similarities = getSimilaritiesFromResults(result);
 
         Map<String, Similarity> processedSims = new HashMap<>();
@@ -61,16 +59,16 @@ public class SimilaritiesResultProcessor extends AbstractResultProcessor {
             .collect(Collectors.toMap(
                 Map.Entry::getKey,
                 s -> new PartialAssessmentDto()
+                    .key(PARTIAL_ASSESSMENT_TITLE)
                     .title(PARTIAL_ASSESSMENT_TITLE)
-                    .severity(PartialAssessmentDto.SeverityEnum.WARNING)
+                    .draftOnly(true)
                     .comment(getCommentFromSimilarity(s.getValue(), threshold)))
             );
 
-        this.studMgmtFacade.addPartialAssessments(
+        this.studMgmtFacade.addOrUpdatePartialAssessments(
             taskConfig.getCourse(),
             taskConfig.getHomework(),
-            partialAssessments,
-            updateStrategy
+            partialAssessments
         );
 
     }
@@ -116,17 +114,6 @@ public class SimilaritiesResultProcessor extends AbstractResultProcessor {
             similarityThreshold = 101.00;
         }
         return Math.min(deviationThreshold, similarityThreshold);
-    }
-
-    private PAUpdateStrategy getPaUpdateStrategy(Map<String, Object> request) {
-        PAUpdateStrategy updateStrategy = PAUpdateStrategy.KEEP;
-
-        try {
-            updateStrategy = PAUpdateStrategy.valueOf((String) request.get("paUpdateStrategy"));
-        } catch (Exception e) {
-            // Ignore, just keep the default: PAUpdateStrategy.KEEP
-        }
-        return updateStrategy;
     }
 
     private String getCommentFromSimilarity(Similarity sim, double threshold) {

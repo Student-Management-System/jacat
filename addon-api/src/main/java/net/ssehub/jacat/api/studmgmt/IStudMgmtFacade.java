@@ -10,14 +10,9 @@ import java.util.Optional;
 
 public interface IStudMgmtFacade {
 
-    boolean updatePartialAssessments(String courseId,
+    boolean addOrUpdatePartialAssessments(String courseId,
                                      String assignmentName,
                                      Map<String, PartialAssessmentDto> partialAssessments);
-
-    boolean addPartialAssessments(String courseId,
-                                  String assignmentName,
-                                  Map<String, PartialAssessmentDto> partialAssessments,
-                                  PAUpdateStrategy paUpdateStrategy);
 
     Optional<AssignmentDto> getAssignment(String courseId, String assignmentName);
 

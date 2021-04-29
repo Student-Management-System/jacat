@@ -27,35 +27,24 @@ public class StudMgmtFacade implements IStudMgmtFacade {
     }
 
     @Override
-    public boolean updatePartialAssessments(String courseId,
-                                            String assignmentName,
-                                            Map<String, PartialAssessmentDto> partialAssessments) {
-        return addPartialAssessments(courseId, assignmentName, partialAssessments, PAUpdateStrategy.UPDATE);
-    }
-
-    @Override
-    public boolean addPartialAssessments(String courseId, String assignmentName,
-                                         Map<String, PartialAssessmentDto> partialAssessments,
-                                         PAUpdateStrategy paUpdateStrategy) {
+    public boolean addOrUpdatePartialAssessments(String courseId,
+                                         String assignmentName,
+                                         Map<String, PartialAssessmentDto> partialAssessments) {
         try {
             AssessmentsApi assessmentsApi = this.studMgmtClient.getAssessmentsApi();
 
-            List<PartialAssessmentDto> newPAs = this.addAssessmentToPA(courseId, assignmentName, partialAssessments);
+            for (String groupOrUsername : partialAssessments.keySet()) {
 
-            for (PartialAssessmentDto newPA : newPAs) {
-                AssessmentUpdateDto updateAssessment = new AssessmentUpdateDto();
-                updateAssessment.setAddPartialAssessments(Collections.singletonList(newPA));
+                Optional<AssessmentDto> assessmentOptional = findAssessment(courseId, assignmentName, groupOrUsername);
+                if (assessmentOptional.isPresent()) {
+                    AssessmentDto assessment = assessmentOptional.get();
 
-                if (paUpdateStrategy.equals(PAUpdateStrategy.UPDATE)) {
-                    List<PartialAssessmentDto> deletePAs = this.getOldPAsWithSameTitle(courseId, assignmentName, newPA);
-                    updateAssessment.setRemovePartialAssignments(deletePAs);
+                    assessmentsApi.setPartialAssessment(partialAssessments.get(groupOrUsername),
+                        courseId,
+                        assessment.getAssignmentId(),
+                        assessment.getId()
+                    );
                 }
-
-                assessmentsApi.updateAssessment(updateAssessment,
-                    courseId,
-                    getAssignment(courseId, assignmentName).get().getId(),
-                    newPA.getAssessmentId()
-                );
             }
 
         } catch (ApiException e) {
@@ -63,32 +52,6 @@ public class StudMgmtFacade implements IStudMgmtFacade {
             return false;
         }
         return true;
-    }
-
-    private List<PartialAssessmentDto> getOldPAsWithSameTitle(String courseId,
-                                                              String assignmentName,
-                                                              PartialAssessmentDto newPA) {
-
-        Optional<AssignmentDto> assignmentOptional = this.getAssignment(courseId, assignmentName);
-        if (assignmentOptional.isEmpty()) {
-            return Collections.emptyList();
-        }
-        AssignmentDto assignment = assignmentOptional.get();
-
-        try {
-            AssessmentsApi assessmentsApi = this.studMgmtClient.getAssessmentsApi();
-
-            AssessmentDto assessment = assessmentsApi.getAssessmentById(
-                courseId, assignment.getId(), newPA.getAssessmentId()
-            );
-
-            return assessment.getPartialAssessments().stream()
-                .filter(fPA -> fPA.getTitle().equals(newPA.getTitle()))
-                .collect(Collectors.toList());
-        } catch (ApiException e) {
-            log.error("Cannot gather Old PartialAssessments for " + assignmentName, e);
-            return Collections.emptyList();
-        }
     }
 
     @Override
@@ -115,8 +78,8 @@ public class StudMgmtFacade implements IStudMgmtFacade {
     }
 
     @Override
-    public List<AssessmentDto> findAssessments (String courseId,
-            String assignmentName) {
+    public List<AssessmentDto> findAssessments(String courseId,
+                                               String assignmentName) {
 
         try {
             AssessmentsApi assessmentsApi = this.studMgmtClient.getAssessmentsApi();
@@ -135,19 +98,5 @@ public class StudMgmtFacade implements IStudMgmtFacade {
         }
 
         return Collections.emptyList();
-    }
-
-    private List<PartialAssessmentDto> addAssessmentToPA(String courseId,
-                                                         String assignmentName,
-                                                         Map<String, PartialAssessmentDto> partialAssessments) {
-        return partialAssessments.keySet().stream().map(groupOrUsername -> {
-            Optional<AssessmentDto> assessment = findAssessment(courseId, assignmentName, groupOrUsername);
-            if (assessment.isPresent()) {
-                PartialAssessmentDto pa = partialAssessments.get(groupOrUsername);
-                pa.setAssessmentId(assessment.get().getId());
-                return pa;
-            }
-            return null;
-        }).filter(Objects::nonNull).collect(Collectors.toList());
     }
 }
