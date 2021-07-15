@@ -1,13 +1,22 @@
 package net.ssehub.jacat.platform.auth;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
 import net.ssehub.jacat.api.studmgmt.IStudMgmtClient;
 import net.ssehub.studentmgmt.backend_api.ApiClient;
 import net.ssehub.studentmgmt.backend_api.ApiException;
-import net.ssehub.studentmgmt.backend_api.api.*;
-import net.ssehub.studentmgmt.backend_api.model.AuthSystemCredentials;
-import net.ssehub.studentmgmt.backend_api.model.AuthTokenDto;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
+import net.ssehub.studentmgmt.backend_api.api.AdmissionStatusApi;
+import net.ssehub.studentmgmt.backend_api.api.AssessmentAllocationApi;
+import net.ssehub.studentmgmt.backend_api.api.AssessmentApi;
+import net.ssehub.studentmgmt.backend_api.api.AssignmentApi;
+import net.ssehub.studentmgmt.backend_api.api.AssignmentRegistrationApi;
+import net.ssehub.studentmgmt.backend_api.api.AuthenticationApi;
+import net.ssehub.studentmgmt.backend_api.api.CourseApi;
+import net.ssehub.studentmgmt.backend_api.api.CourseConfigApi;
+import net.ssehub.studentmgmt.backend_api.api.CourseParticipantsApi;
+import net.ssehub.studentmgmt.backend_api.api.GroupApi;
+import net.ssehub.studentmgmt.backend_api.api.UserApi;
 
 @Service
 public class StudMgmtClient implements IStudMgmtClient {
@@ -22,13 +31,13 @@ public class StudMgmtClient implements IStudMgmtClient {
     }
 
     @Override
-    public AssignmentsApi getAssignmentsApi() throws ApiException {
-        return new AssignmentsApi(connect());
+    public AssignmentApi getAssignmentsApi() throws ApiException {
+        return new AssignmentApi(connect());
     }
 
     @Override
-    public AssessmentsApi getAssessmentsApi() throws ApiException {
-        return new AssessmentsApi(connect());
+    public AssessmentApi getAssessmentsApi() throws ApiException {
+        return new AssessmentApi(connect());
     }
 
     @Override
@@ -57,29 +66,30 @@ public class StudMgmtClient implements IStudMgmtClient {
     }
 
     @Override
-    public CoursesApi getCourseApi() throws ApiException {
-        return new CoursesApi(connect());
+    public CourseApi getCourseApi() throws ApiException {
+        return new CourseApi(connect());
     }
 
     @Override
-    public GroupsApi getGroupsApi() throws ApiException {
-        return new GroupsApi(connect());
+    public GroupApi getGroupsApi() throws ApiException {
+        return new GroupApi(connect());
     }
 
     @Override
-    public UsersApi getUsersApi() throws ApiException {
-        return new UsersApi(connect());
+    public UserApi getUsersApi() throws ApiException {
+        return new UserApi(connect());
     }
 
     private ApiClient connect() throws ApiException {
         ApiClient apiClient = new ApiClient();
         apiClient.setBasePath(basePath);
 
-        AuthenticationApi auth = new AuthenticationApi(apiClient);
-        AuthSystemCredentials token =
-            new AuthSystemCredentials().token(this.sparkyAuth.getToken());
-        AuthTokenDto authToken = auth.loginWithToken(token);
-        apiClient.setAccessToken(authToken.getAccessToken());
+//        AuthenticationApi auth = new AuthenticationApi(apiClient);
+//        AuthSystemCredentials token =
+//            new AuthSystemCredentials().token(this.sparkyAuth.getToken());
+//        AuthTokenDto authToken = auth.loginWithToken(token);
+//        apiClient.setAccessToken(authToken.getAccessToken());
+        apiClient.setAccessToken(this.sparkyAuth.getToken());
         return apiClient;
     }
 

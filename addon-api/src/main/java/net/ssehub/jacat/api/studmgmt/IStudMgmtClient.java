@@ -5,9 +5,9 @@ import net.ssehub.studentmgmt.backend_api.api.*;
 
 public interface IStudMgmtClient {
 
-    AssignmentsApi getAssignmentsApi() throws ApiException;
+    AssignmentApi getAssignmentsApi() throws ApiException;
 
-    AssessmentsApi getAssessmentsApi() throws ApiException;
+    AssessmentApi getAssessmentsApi() throws ApiException;
 
     AssessmentAllocationApi getAssessmentAllocationApi() throws ApiException;
 
@@ -19,9 +19,9 @@ public interface IStudMgmtClient {
 
     CourseConfigApi getCourseConfigApi() throws ApiException;
 
-    CoursesApi getCourseApi() throws ApiException;
+    CourseApi getCourseApi() throws ApiException;
 
-    GroupsApi getGroupsApi() throws ApiException;
+    GroupApi getGroupsApi() throws ApiException;
 
-    UsersApi getUsersApi() throws ApiException;
+    UserApi getUsersApi() throws ApiException;
 }

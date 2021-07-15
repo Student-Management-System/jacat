@@ -5,8 +5,8 @@ import net.ssehub.jacat.api.studmgmt.IStudMgmtFacade;
 import net.ssehub.jacat.api.studmgmt.IStudMgmtClient;
 import net.ssehub.jacat.api.studmgmt.PAUpdateStrategy;
 import net.ssehub.studentmgmt.backend_api.ApiException;
-import net.ssehub.studentmgmt.backend_api.api.AssessmentsApi;
-import net.ssehub.studentmgmt.backend_api.api.AssignmentsApi;
+import net.ssehub.studentmgmt.backend_api.api.AssessmentApi;
+import net.ssehub.studentmgmt.backend_api.api.AssignmentApi;
 import net.ssehub.studentmgmt.backend_api.model.AssessmentDto;
 import net.ssehub.studentmgmt.backend_api.model.AssessmentUpdateDto;
 import net.ssehub.studentmgmt.backend_api.model.AssignmentDto;
@@ -31,7 +31,7 @@ public class StudMgmtFacade implements IStudMgmtFacade {
                                          String assignmentName,
                                          Map<String, PartialAssessmentDto> partialAssessments) {
         try {
-            AssessmentsApi assessmentsApi = this.studMgmtClient.getAssessmentsApi();
+            AssessmentApi assessmentsApi = this.studMgmtClient.getAssessmentsApi();
 
             for (String groupOrUsername : partialAssessments.keySet()) {
 
@@ -57,7 +57,7 @@ public class StudMgmtFacade implements IStudMgmtFacade {
     @Override
     public Optional<AssignmentDto> getAssignment(String courseId, String assignmentName) {
         try {
-            AssignmentsApi assignmentsApi = this.studMgmtClient.getAssignmentsApi();
+            AssignmentApi assignmentsApi = this.studMgmtClient.getAssignmentsApi();
             return assignmentsApi.getAssignmentsOfCourse(courseId).stream()
                 .filter(assignment -> assignment.getName().equalsIgnoreCase(assignmentName))
                 .findFirst();
@@ -82,7 +82,7 @@ public class StudMgmtFacade implements IStudMgmtFacade {
                                                String assignmentName) {
 
         try {
-            AssessmentsApi assessmentsApi = this.studMgmtClient.getAssessmentsApi();
+            AssessmentApi assessmentsApi = this.studMgmtClient.getAssessmentsApi();
             Optional<AssignmentDto> assignmentOptional = getAssignment(courseId, assignmentName);
             if (assignmentOptional.isPresent()) {
                 AssignmentDto assignment = assignmentOptional.get();
