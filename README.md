@@ -51,6 +51,7 @@ JaCAT is built on the following frameworks/toolkits:
 * [Spring Boot](https://spring.io)
 * [JPlag](http://jplag.ipd.kit.edu)
 * [SVNKit](https://svnkit.com/)
+* [Lombok](https://projectlombok.org/)
 
 
 <!-- GETTING STARTED -->
@@ -59,6 +60,11 @@ JaCAT is built on the following frameworks/toolkits:
 To get a local copy up and running follow these simple steps.
 
 ### Prerequisites
+Lombok must be installed into the IDE (Eclipse and IntelliJ are supported). To install Lombok into Eclipse you need to:
+* Download Lombok from [Maven Central](https://search.maven.org/search?q=g:org.projectlombok%20AND%20a:lombok&core=gav) (e.g. version 1.8.20)
+* Run the jar, e.g. `java -jar lombok-1.18.20.jar`
+* Select used Eclipse instances, update and restart them
+* Rebuild projects
 
 ### Installation
 
