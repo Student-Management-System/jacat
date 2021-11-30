@@ -13,6 +13,7 @@
         <module>core</module>
         <module>test-addons</module>
         <module>svn-datacollector</module>
+        <module>exercise-submitter-server-datacollector</module>
         <module>jpplag-addon</module>
         <module>pa-resultprocessor</module>
     </modules>

@@ -1,0 +1,6 @@
+exerciseSubmitterServer:
+  url: http://localhost:8081/
+  authUrl: http://localhost:8080/
+  stuMgmtUrl: http://localhost:3000/
+  username: username
+  password: secret

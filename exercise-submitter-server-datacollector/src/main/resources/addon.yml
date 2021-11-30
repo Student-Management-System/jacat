@@ -1,0 +1,2 @@
+main: net.ssehub.jacat.addon.exercise_submitter_server_datacollector.Main
+name: Exercise Submitter Server DataCollector
